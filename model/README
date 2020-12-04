@@ -1,0 +1,4 @@
+The schemas were generated the following way:
+1. Upload the .csv file to https://csvjson.com/csv2json to convert it to an array of JSOn objects. (For huge files like flights, it's better that you copy the first 2 lines and paste them here, loading the entire file will make it lage a lot.)
+2. Copy any JSON object to https://transform.tools/json-to-mongoose and generate the schema.
+
