@@ -23,6 +23,11 @@ app.get('/noOfFlightsPerMonth', async (req, res) => {
     res.json(noOfFlightsPerMonth);
 });
 
+app.get('/noOfFlightsPerMonthPerOrigin', async (req, res) => {
+    let noOfFlightsPerMonthPerOrigin = await service.getNumberOfFlightsPerMonthPerOrigin();
+    res.json(noOfFlightsPerMonthPerOrigin);
+});
+
 app.get('/', (req, res) => {
     res.send("asdasdsa");
 });

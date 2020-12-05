@@ -41,20 +41,32 @@ mongoose.connect('mongodb+srv://sepMongo:mongo@cluster0.besa8.mongodb.net/sep6?r
 
 
 
-    // console.log("\n\n\n-----LOADING FLIGHTS------");
-    // await Flight.deleteMany({});
-    // console.log("Cleared flights");
+    console.log("\n\n\n-----LOADING FLIGHTS------");
+    await Flight.deleteMany({});
+    console.log("Cleared flights");
 
-    // let flights = await csv().fromFile("./initialDataLoading/files/flights.csv");
-    // console.log("Flights loaded to JSON");
+    let flights = await csv().fromFile("./initialDataLoading/files/flights.csv");
+    console.log("Flights loaded to JSON");
 
-    // for (var i = 0; i < flights.length; i++) {
-    //     (await new Flight(flights[i]).save());
-    //     if (i % 100 === 0)
-    //         console.log(`${i} airlines loaded`);
-    // }
+    for (var i = 0; i < flights.length; i++) {
+        (new Flight(flights[i]).save()
+            .then(
+            )
+            .catch(err => {
+                // console.log(flights[i]);
+            }));
+        if (i % 10000 === 0) {
+            // console.log(flights[i]);
+            console.log(`${i} airlines loaded`);
+        }
+        if (i > 160700) {
+            // console.log(flights[i]);
+            console.log(`${i} airlines loaded`);
+        }
 
-    // console.log("Flights saved to MongoDB");
+    }
+
+    console.log("Flights saved to MongoDB");
 
 
 
@@ -68,10 +80,10 @@ mongoose.connect('mongodb+srv://sepMongo:mongo@cluster0.besa8.mongodb.net/sep6?r
     // await Plane.create(planes);
 
     // console.log("Planes saved to MongoDB");
-    
 
-    
-    
+
+
+
     // console.log("\n\n\n-----LOADING WEATHER------");
     // await Weather.deleteMany({});
     // console.log("Cleared weather");
