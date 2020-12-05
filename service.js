@@ -3,7 +3,7 @@ const Airport = require('./model/airport');
 const Flight = require('./model/flight');
 
 const getOrigins = async () => {
-    let origins = await Airport.find({$or:[{ "faa": "JFK"}, {"faa": "LGA"}, {"faa": "EWR"}]}).exec();
+    let origins = await Airport.find({ $or: [{ "faa": "JFK" }, { "faa": "LGA" }, { "faa": "EWR" }] }).exec();
     return origins;
 }
 
@@ -23,9 +23,10 @@ const getNumberOfFlightsPerMonth = async () => {
 }
 
 const getNumberOfFlightsPerMonthPerOrigin = async () => {
-    let flightsAtJFK = await Flight.find().where({"origin": "JFK"}).exec();
-    let flightsAtLGA = await Flight.find().where({"origin": "LGA"}).exec();
-    let flightsAtEWR = await Flight.find().where({"origin": "EWR"}).exec();
+    let flightsAtJFK = await Flight.find().where({ "origin": "JFK" }).exec();
+    let flightsAtLGA = await Flight.find().where({ "origin": "LGA" }).exec();
+    let flightsAtEWR = await Flight.find().where({ "origin": "EWR" }).exec();
+    let totalFlightsCount = [];
     // let flights = await csv().fromFile("./initialDataLoading/files/flights.csv");
     let noOfFlightsPerYearMonthAtJFK = {};
     let noOfFlightsPerYearMonthAtLGA = {};
@@ -33,12 +34,29 @@ const getNumberOfFlightsPerMonthPerOrigin = async () => {
 
     flightsAtJFK.forEach((flight) => {
         if (noOfFlightsPerYearMonthAtJFK[flight.month] == undefined)
-        noOfFlightsPerYearMonthAtJFK[flight.month] = 1;
+            noOfFlightsPerYearMonthAtJFK[flight.month] = 1;
         else
-        noOfFlightsPerYearMonthAtJFK[flight.month]++;
+            noOfFlightsPerYearMonthAtJFK[flight.month]++;
     });
 
-    return noOfFlightsPerYearMonthAtJFK;
+    flightsAtLGA.forEach((flight) => {
+        if (noOfFlightsPerYearMonthAtLGA[flight.month] == undefined)
+            noOfFlightsPerYearMonthAtLGA[flight.month] = 1;
+        else
+            noOfFlightsPerYearMonthAtLGA[flight.month]++;
+    });
+
+    flightsAtEWR.forEach((flight) => {
+        if (noOfFlightsPerYearMonthAtEWR[flight.month] == undefined)
+            noOfFlightsPerYearMonthAtEWR[flight.month] = 1;
+        else
+            noOfFlightsPerYearMonthAtEWR[flight.month]++;
+    });
+
+    totalFlightsCount = [noOfFlightsPerYearMonthAtJFK,
+        noOfFlightsPerYearMonthAtLGA,
+        noOfFlightsPerYearMonthAtEWR];
+    return totalFlightsCount;
 }
 
 module.exports = {
