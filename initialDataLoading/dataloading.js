@@ -4,6 +4,7 @@ const Airport = require('../model/airport');
 const Flight = require('../model/flight');
 const Plane = require('../model/plane');
 const Weather = require('../model/weather');
+const perf = require('execution-time')();
 
 const csv = require('csvtojson');
 const {
@@ -15,85 +16,62 @@ mongoose.connect('mongodb+srv://sepMongo:mongo@cluster0.besa8.mongodb.net/sep6?r
     useUnifiedTopology: true
 }).then(async () => {
     console.log("Connected to MongoDB via Mongoose");
-
-    // console.log("-----LOADING AIRLINES------");
-    // await Airline.deleteMany({});
-    // console.log("Cleared airlines");
-
-    // let airlines = await csv().fromFile("./initialDataLoading/files/airlines.csv");
-    // console.log("Airlines loaded to JSON");
-
-    // await Airline.create(airlines);
-    // console.log("Airlines saved to MongoDB");
-
-
-
-
-    // console.log("\n\n\n-----LOADING AIRPORTS------");
-    // await Airport.deleteMany({});
-    // console.log("Cleared airports");
-
-    // let airports = await csv().fromFile("./initialDataLoading/files/airports.csv");
-    // console.log("Airports loaded to JSON");
-
-    // await Airport.create(airports);
-    // console.log("Airports saved to MongoDB");
-
-
-
-    console.log("\n\n\n-----LOADING FLIGHTS------");
-    await Flight.deleteMany({});
-    console.log("Cleared flights");
-
-    let flights = await csv().fromFile("./initialDataLoading/files/flights.csv");
-    console.log("Flights loaded to JSON");
-
-    for (var i = 0; i < flights.length; i++) {
-        (new Flight(flights[i]).save()
-            .then(
-            )
-            .catch(err => {
-                // console.log(flights[i]);
-            }));
-        if (i % 10000 === 0) {
-            // console.log(flights[i]);
-            console.log(`${i} airlines loaded`);
-        }
-        if (i > 160700) {
-            // console.log(flights[i]);
-            console.log(`${i} airlines loaded`);
-        }
-
-    }
-
-    console.log("Flights saved to MongoDB");
-
-
-
-    // console.log("\n\n\n-----LOADING PLANES------");
-    // await Plane.deleteMany({});
-    // console.log("Cleared planes");
-
-    // let planes = await csv().fromFile("./initialDataLoading/files/planes.csv");
-    // console.log("Planes loaded to JSON");
-
-    // await Plane.create(planes);
-
-    // console.log("Planes saved to MongoDB");
-
-
-
-
-    // console.log("\n\n\n-----LOADING WEATHER------");
-    // await Weather.deleteMany({});
-    // console.log("Cleared weather");
-
-    // let weather = await csv().fromFile("./initialDataLoading/files/weather.csv");
-    // console.log("Weather loaded to JSON");
-
-    // await Weather.create(weather);
-
-    // console.log("Weather saved to MongoDB");
-
-
+    await loadData(Airline, "airlines");
+    await loadData(Airport, "airports");
+    await loadData(Flight, "flights");
+    await loadData(Plane, "planes");
+    await loadData(Weather, "weather");
+    console.log("LOADING DATA COMPLETE!")
 });
+
+const chunkSize = 200; //perhaps it can be refactored so it is passed as an argument when running the script
+
+//schema - the name of the schema imported at the begining of this file
+//fileName - the name of the .csv file, without exetinsion
+const loadData = async (schema, fileName) => {
+    console.log(`-----LOADING ${fileName.toUpperCase()}------`);
+
+    //clear existing data in MongoDB
+    perf.start();
+    await schema.deleteMany({});
+    let performanceResult = perf.stop();
+    console.log(`Collection cleared in MongoDB in ${performanceResult.time.toFixed(2)}ms`);
+
+    //load data from .csv into an array
+    perf.start();
+    let dataArray = await csv().fromFile(`./initialDataLoading/files/${fileName}.csv`);
+    //replace NA (not available) numbers with undefined, otherwise there is an error when inserting in database because "NA" is trying to be put in the place of the number.
+    //TODO this solution is not perfect yet, if there is a string "NA" that's just a string and not a number, it will also be replaced with undefined. Check for key type before replacing.
+    let keys = Object.keys(dataArray[0]);
+    dataArray.forEach(o => {
+        keys.forEach(key => {
+            if (o[key] == "NA")
+                o[key] = undefined;
+        });
+    })
+    performanceResult = perf.stop();
+    console.log(`Data loaded from CSV in ${performanceResult.time.toFixed(2)}ms`);
+
+    perf.start();
+    let dataChunked = chunk(dataArray, chunkSize);
+    for (let i = 0; i < dataChunked.length; i++) {
+        await schema.create(dataChunked[i]);
+        console.log(`Chunk ${i+1}/${dataChunked.length} with ${dataChunked[i].length} elements saved!`);
+    }
+    performanceResult = perf.stop();
+    console.log(`Data saved to MongoDB in ${performanceResult.time.toFixed(2)}ms\n`);
+}
+
+//splits an array into chunks of ${size}
+const chunk = (array, size) => {
+    const chunked_arr = [];
+    for (let i = 0; i < array.length; i++) {
+        const last = chunked_arr[chunked_arr.length - 1];
+        if (!last || last.length === size) {
+            chunked_arr.push([array[i]]);
+        } else {
+            last.push(array[i]);
+        }
+    }
+    return chunked_arr;
+}
