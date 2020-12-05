@@ -3,6 +3,15 @@ const app = express()
 const port = 3000
 const csv = require('csvtojson')
 const service = require("./service");
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb+srv://sepMongo:mongo@cluster0.besa8.mongodb.net/sep6?retryWrites=true&w=majority', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+},
+    () => {
+        console.log("Connected to MongoDB via Mongoose");
+    });
 
 app.get('/origins', async (req, res) => {
     let origins = await service.getOrigins();

@@ -41,19 +41,47 @@ mongoose.connect('mongodb+srv://sepMongo:mongo@cluster0.besa8.mongodb.net/sep6?r
 
 
 
+    // console.log("\n\n\n-----LOADING FLIGHTS------");
+    // await Flight.deleteMany({});
+    // console.log("Cleared flights");
 
-    console.log("\n\n\n-----LOADING FLIGHTS------");
-    await Flight.deleteMany({});
-    console.log("Cleared flights");
+    // let flights = await csv().fromFile("./initialDataLoading/files/flights.csv");
+    // console.log("Flights loaded to JSON");
 
-    let flights = await csv().fromFile("./initialDataLoading/files/flights.csv");
-    console.log("Flights loaded to JSON");
+    // for (var i = 0; i < flights.length; i++) {
+    //     (await new Flight(flights[i]).save());
+    //     if (i % 100 === 0)
+    //         console.log(`${i} airlines loaded`);
+    // }
 
-    for (var i = 0; i < flights.length; i++) {
-        (await new Flight(flights[i]).save());
-        if (i % 100 === 0)
-            console.log(`${i} airlines loaded`);
-    }
+    // console.log("Flights saved to MongoDB");
 
-    console.log("Flights saved to MongoDB");
+
+
+    // console.log("\n\n\n-----LOADING PLANES------");
+    // await Plane.deleteMany({});
+    // console.log("Cleared planes");
+
+    // let planes = await csv().fromFile("./initialDataLoading/files/planes.csv");
+    // console.log("Planes loaded to JSON");
+
+    // await Plane.create(planes);
+
+    // console.log("Planes saved to MongoDB");
+    
+
+    
+    
+    // console.log("\n\n\n-----LOADING WEATHER------");
+    // await Weather.deleteMany({});
+    // console.log("Cleared weather");
+
+    // let weather = await csv().fromFile("./initialDataLoading/files/weather.csv");
+    // console.log("Weather loaded to JSON");
+
+    // await Weather.create(weather);
+
+    // console.log("Weather saved to MongoDB");
+
+
 });
