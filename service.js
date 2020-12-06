@@ -8,18 +8,16 @@ const getOrigins = async () => {
 }
 
 const getNumberOfFlightsPerMonth = async () => {
-    let flights = await Flight.find().exec();
-    // let flights = await csv().fromFile("./initialDataLoading/files/flights.csv");
-    let noOfFlightsPerYearMonth = {};
+    let flightsPerMonth = [];
 
-    flights.forEach((flight) => {
-        if (noOfFlightsPerYearMonth[flight.month] == undefined)
-            noOfFlightsPerYearMonth[flight.month] = 1;
-        else
-            noOfFlightsPerYearMonth[flight.month]++;
-    });
+    for (var i = 0; i < 12; i++) {
+        let flights = await Flight.countDocuments({
+            "month": (i + 1)
+        });
+        flightsPerMonth[i] = flights;
+    }
 
-    return noOfFlightsPerYearMonth;
+    return flightsPerMonth;
 }
 
 const getNumberOfFlightsPerMonthPerOrigin = async () => {
