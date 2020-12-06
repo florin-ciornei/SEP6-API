@@ -63,24 +63,38 @@ const countTopDestinations = async (number) => {
 
 const countTopDestinationsPerOrigin = async (number, origin) => {
     let result = await Flight.aggregate([{
-            $match: {
-                origin: origin
-            }
-        },
-        {
-            $group: {
-                _id: "$dest",
-                count: {
-                    $sum: 1
-                }
-            }
-        }, {
-            $sort: {
-                count: -1
-            }
-        }, {
-            $limit: number
+        $match: {
+            origin: origin
         }
+    },
+    {
+        $group: {
+            _id: "$dest",
+            count: {
+                $sum: 1
+            }
+        }
+    }, {
+        $sort: {
+            count: -1
+        }
+    }, {
+        $limit: number
+    }
+    ]).exec();
+
+    return result;
+}
+
+const meanAirtimePerOrigin = async () => {
+    let result = await Flight.aggregate([{
+        $group: {
+            _id: "$origin",
+            average: {
+                $avg: '$air_time'
+            }
+        }
+    }
     ]).exec();
 
     return result;
@@ -91,5 +105,6 @@ module.exports = {
     getNumberOfFlightsPerMonth,
     getNumberOfFlightsPerMonthPerOrigin,
     countTopDestinations,
-    countTopDestinationsPerOrigin
+    countTopDestinationsPerOrigin,
+    meanAirtimePerOrigin
 }
