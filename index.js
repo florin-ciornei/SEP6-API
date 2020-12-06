@@ -68,6 +68,11 @@ app.get('/meanAirtimePerOrigin', async (req, res) => {
     res.json(meanAirtimePerOrigin);
 });
 
+app.get('/weatherObservationPerOrigin', async (req, res) => {
+    let weatherObservationPerOrigin = await service.weatherObservationPerOrigin();
+    res.json(weatherObservationPerOrigin);
+});
+
 app.get('/', (req, res) => {
     res.send("Welcome to our SEP6 project !!! A RESTful API built by " +
         "Andrei, Daniela and Florin.");
