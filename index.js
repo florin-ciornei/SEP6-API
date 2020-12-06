@@ -27,7 +27,7 @@ app.get('/noOfFlightsPerMonth', async (req, res) => {
 });
 
 app.get('/noOfFlightsPerMonthPerOrigin', async (req, res) => {
-    let noOfFlightsPerMonthPerOrigin = await service.getNumberOfFlightsPerMonthPerOrigin();
+    let noOfFlightsPerMonthPerOrigin = await service.getNumberOfFlightsPerMonthPerOrigin(req.query.origin);
     res.json(noOfFlightsPerMonthPerOrigin);
 });
 
