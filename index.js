@@ -31,6 +31,30 @@ app.get('/noOfFlightsPerMonthPerOrigin', async (req, res) => {
     res.json(noOfFlightsPerMonthPerOrigin);
 });
 
+app.get('/topDestinations', async (req, res) => {
+    if (req.query.number == undefined)
+        return res.status(400).send("Please specify the number of top destinations to be returned");
+
+    let number = parseInt(req.query.number);
+    if (isNaN(number))
+        return res.status(400).send("Number doesn't appear to be a number!");
+
+    let topDesinations = await service.countTopDestinations(number);
+    res.json(topDesinations);
+});
+
+app.get('/topDestinationsPerOrigin', async (req, res) => {
+    if (req.query.number == undefined)
+        return res.status(400).send("Please specify the number of top destinations to be returned");
+
+    let number = parseInt(req.query.number);
+    if (isNaN(number))
+        return res.status(400).send("Number doesn't appear to be a number!");
+
+    let topDesinations = await service.countTopDestinationsPerOrigin(number, req.query.origin);
+    res.json(topDesinations);
+});
+
 app.get('/', (req, res) => {
     res.send("asdasdsa");
 });
