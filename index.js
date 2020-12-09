@@ -75,7 +75,7 @@ app.get('/weatherObservationPerOrigin', async (req, res) => {
 
 app.get('/', (req, res) => {
     res.send("Welcome to our SEP6 project !!! A RESTful API built by " +
-        "Andrei, Daniela and Florin.");
+        "Andrei, Daniela and Florin. ");
 });
 
 app.listen(port, () => {
