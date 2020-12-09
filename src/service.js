@@ -1,6 +1,6 @@
-const Airport = require('./model/airport');
-const Flight = require('./model/flight');
-const Weather = require('./model/weather');
+const Airport = require('../model/airport');
+const Flight = require('../model/flight');
+const Weather = require('../model/weather');
 
 const getOrigins = async () => {
     let origins = await Airport.find({

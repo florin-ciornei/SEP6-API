@@ -1,4 +1,4 @@
-const service = require("./service");
+const service = require("./src/service");
 
 const mongoose = require('mongoose');
 
