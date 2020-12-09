@@ -9,6 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: google-github-actions/deploy-appengine
+      - uses: google-github-actions/deploy-appengine@main
         with:
           credentials: ${{ secrets.gcp_credentials }}
