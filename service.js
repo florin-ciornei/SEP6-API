@@ -1,6 +1,6 @@
-const csv = require('csvtojson')
 const Airport = require('./model/airport');
 const Flight = require('./model/flight');
+const Weather = require('./model/weather');
 
 const getOrigins = async () => {
     let origins = await Airport.find({
@@ -63,33 +63,64 @@ const countTopDestinations = async (number) => {
 
 const countTopDestinationsPerOrigin = async (number, origin) => {
     let result = await Flight.aggregate([{
-            $match: {
-                origin: origin
-            }
-        },
-        {
-            $group: {
-                _id: "$dest",
-                count: {
-                    $sum: 1
-                }
-            }
-        }, {
-            $sort: {
-                count: -1
-            }
-        }, {
-            $limit: number
+        $match: {
+            origin: origin
         }
+    },
+    {
+        $group: {
+            _id: "$dest",
+            count: {
+                $sum: 1
+            }
+        }
+    }, {
+        $sort: {
+            count: -1
+        }
+    }, {
+        $limit: number
+    }
     ]).exec();
 
     return result;
 }
+
+const meanAirtimePerOrigin = async () => {
+    let result = await Flight.aggregate([{
+        $group: {
+            _id: "$origin",
+            average: {
+                $avg: '$air_time'
+            }
+        }
+    }
+    ]).exec();
+
+    return result;
+}
+
+const weatherObservationPerOrigin = async () => {
+    let result = await Weather.aggregate([{
+        $group: {
+            _id: "$origin",
+            count: {
+                $sum: 1
+            }
+        }
+    }
+    ]).exec();
+
+    return result;
+}
+
 
 module.exports = {
     getOrigins,
     getNumberOfFlightsPerMonth,
     getNumberOfFlightsPerMonthPerOrigin,
     countTopDestinations,
-    countTopDestinationsPerOrigin
+    countTopDestinationsPerOrigin,
+    meanAirtimePerOrigin,
+    weatherObservationPerOrigin
 }
