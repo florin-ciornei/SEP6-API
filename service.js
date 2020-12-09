@@ -15,35 +15,27 @@ const getOrigins = async () => {
     return origins;
 }
 
-const getNumberOfFlightsPerMonth = async () => {
+const getNumberOfFlightsPerMonth = async (origin) => {
     let flightsPerMonth = [];
 
     for (var i = 0; i < 12; i++) {
-        let flights = await Flight.countDocuments({
+        let countFilter = {
             "month": (i + 1)
-        });
+        }
+
+        if (origin != undefined) {
+            countFilter.origin = origin;
+        }
+
+        let flights = await Flight.countDocuments(countFilter);
         flightsPerMonth[i] = flights;
     }
 
     return flightsPerMonth;
 }
 
-const getNumberOfFlightsPerMonthPerOrigin = async (origin) => {
-    let flightsPerMonth = [];
-
-    for (var i = 0; i < 12; i++) {
-        let flights = await Flight.countDocuments({
-            "month": (i + 1),
-            "origin": origin
-        });
-        flightsPerMonth[i] = flights;
-    }
-
-    return flightsPerMonth;
-}
-
-const countTopDestinations = async (number) => {
-    let result = await Flight.aggregate([{
+const countTopDestinations = async (number, origin) => {
+    let aggregatePipeline = [{
         $group: {
             _id: "$dest",
             count: {
@@ -56,61 +48,68 @@ const countTopDestinations = async (number) => {
         }
     }, {
         $limit: number
-    }]).exec();
+    }];
 
-    return result;
-}
-
-const countTopDestinationsPerOrigin = async (number, origin) => {
-    let result = await Flight.aggregate([{
-        $match: {
-            origin: origin
-        }
-    },
-    {
-        $group: {
-            _id: "$dest",
-            count: {
-                $sum: 1
+    if (origin != undefined) {
+        aggregatePipeline.unshift({
+            $match: {
+                origin: origin
             }
-        }
-    }, {
-        $sort: {
-            count: -1
-        }
-    }, {
-        $limit: number
+        });
     }
-    ]).exec();
+
+    let result = await Flight.aggregate(aggregatePipeline).exec();
+
+    result.forEach((o) => {
+        o.faa = o._id;
+        delete o._id;
+    });
 
     return result;
 }
 
-const meanAirtimePerOrigin = async () => {
-    let result = await Flight.aggregate([{
+const meanAirtime = async (origin) => {
+    let aggregatePipeline = [{
         $group: {
             _id: "$origin",
             average: {
                 $avg: '$air_time'
             }
         }
+    }];
+
+    if (origin != undefined) {
+        aggregatePipeline.unshift({
+            $match: {
+                origin: origin
+            }
+        });
     }
-    ]).exec();
+
+    let result = await Flight.aggregate(aggregatePipeline).exec();
 
     return result;
 }
 
-const weatherObservationPerOrigin = async () => {
-    let result = await Weather.aggregate([{
+const weatherObservation = async (origin) => {
+    let aggregatePipeline = [{
         $group: {
             _id: "$origin",
             count: {
                 $sum: 1
             }
         }
-    }
-    ]).exec();
+    }];
 
+    if (origin != undefined) {
+        aggregatePipeline.unshift({
+            $match: {
+                origin: origin
+            }
+        });
+    }
+
+    let result = await Weather.aggregate(aggregatePipeline).exec();
     return result;
 }
 
@@ -118,9 +117,7 @@ const weatherObservationPerOrigin = async () => {
 module.exports = {
     getOrigins,
     getNumberOfFlightsPerMonth,
-    getNumberOfFlightsPerMonthPerOrigin,
     countTopDestinations,
-    countTopDestinationsPerOrigin,
-    meanAirtimePerOrigin,
-    weatherObservationPerOrigin
+    meanAirtime,
+    weatherObservation
 }
