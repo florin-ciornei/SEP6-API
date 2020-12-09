@@ -56,7 +56,7 @@ app.get('/topDestinationsPerOrigin', async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.send("asdasdsa");
+    res.send("REST API for sep 6");
 });
 
 app.listen(port, () => {
