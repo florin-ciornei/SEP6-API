@@ -88,6 +88,11 @@ const meanAirtime = async (origin) => {
 
     let result = await Flight.aggregate(aggregatePipeline).exec();
 
+    result.forEach((o) => {
+        o.faa = o._id;
+        delete o._id;
+    });
+
     return result;
 }
 
@@ -110,6 +115,12 @@ const weatherObservation = async (origin) => {
     }
 
     let result = await Weather.aggregate(aggregatePipeline).exec();
+
+    result.forEach((o) => {
+        o.faa = o._id;
+        delete o._id;
+    });
+    
     return result;
 }
 

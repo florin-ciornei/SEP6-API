@@ -16,6 +16,19 @@ mongoose.connect('mongodb+srv://sepMongo:mongo@cluster0.besa8.mongodb.net/sep6?r
 
 app.use(cors())
 
+app.use('/doc', express.static('doc'))
+
+
+/**
+ * @api {get} /user/:id Request User information
+ * @apiName GetUser
+ * @apiGroup User
+ *
+ * @apiParam {Number} id User's unique ID.
+ *
+ * @apiSuccess {String} firstname Firstname of the User.
+ * @apiSuccess {String} lastname  Lastname of the User.
+ */
 app.get('/origins', async (req, res) => {
     let origins = await service.getOrigins();
     res.json(origins);
