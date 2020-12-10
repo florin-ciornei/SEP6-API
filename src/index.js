@@ -155,6 +155,16 @@ app.get('/dailyMeanTemperature', async (req, res) => {
     res.json(dailyMeanTemperaturePerOrigin);
 });
 
+app.get('/numberOfPlanesOfEachModel', async (req, res) => {
+    let manufacturer = req.query.manufacturer;
+
+    if (manufacturer == undefined)
+        return res.status(400).send("Please add manufacturer query parameter, ex: ?manufacturer=AIRBUS%20INDUSTRIE")
+
+    let data = await service.numberOfPlanesOfEachModel(manufacturer);
+    res.json(data);
+});
+
 
 /**
  * @api {get} / Display Main Page
