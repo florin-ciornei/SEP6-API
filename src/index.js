@@ -23,7 +23,8 @@ app.use('/doc', express.static('doc'))
  * @api {get} /origins General Route - Origins - Request origins information
  * @apiName GetOrigins
  * @apiGroup Route 0 
- * @apiSuccess {json[]} origins Returns an array of json objects containing all origins and their related information.
+ * @apiSuccess {json[]} origins Returns an array of json objects containing all 
+ * origins and their related information.
  */
 app.get('/origins', async (req, res) => {
     let origins = await service.getOrigins();
@@ -32,7 +33,8 @@ app.get('/origins', async (req, res) => {
 
 
 /**
- * @api {get} /noOfFlightsPerMonth?origin={origin} Flights per Month - Request Numeber of flights per month
+ * @api {get} /noOfFlightsPerMonth?origin={origin}
+ * Flights per Month - Request Numeber of flights per month
  * @apiName GetNumeberOfFlights
  * @apiGroup Route 1 
  *
@@ -40,7 +42,8 @@ app.get('/origins', async (req, res) => {
  *
  * @apiSuccess {Numebr[]} number_Of_Flights Returns the numebr of flights.
  */
-//without ?origin returns for all origins, with ?origin=... returns for that specific origin
+//without ?origin returns for all origins, with ?origin=... returns for that 
+//specific origin
 app.get('/noOfFlightsPerMonth', async (req, res) => {
     let origin = req.query.origin;
     let noOfFlightsPerMonth = await service.getNumberOfFlightsPerMonth(origin);
@@ -49,19 +52,22 @@ app.get('/noOfFlightsPerMonth', async (req, res) => {
 
 
 /**
- * @api {get} /topDestinations?number={number}&origin={origin} Top Destinations - Request Top Destinations
+ * @api {get} /topDestinations?number={number}&origin={origin} 
+ * Top Destinations - Request Top Destinations
  * @apiName GetTopDestinations
  * @apiGroup Route 2 
  *
  * @apiParam {Number} number The numer of destinatinos to be returned
- * @apiParam {String} [origin] Top Destinations for that origin number of lfights per month for that Origin.
+ * @apiParam {String} [origin] Top Destinations for that origin number 
+ * of lfights per month for that Origin.
  *
  * @apiSuccess {json[]} top_Destinations Returns an array of json objects 
  * containing the top destination airport codes and the number of flights 
  * made for each destination. These are the most frequently visited 
  * destinations in a descending order (i.e. Top Destinations).
  */
-//without ?origin returns for all origins, with ?origin=... returns for that specific origin
+//without ?origin returns for all origins, with ?origin=... returns 
+//for that specific origin
 app.get('/topDestinations', async (req, res) => {
     if (req.query.number == undefined)
         return res.status(400).send("Please specify the number " +
@@ -79,7 +85,8 @@ app.get('/topDestinations', async (req, res) => {
 
 
 /**
- * @api {get} /meanAirtime?origin={origin} Mean Air Time - Request Mean Air Time
+ * @api {get} /meanAirtime?origin={origin} 
+ * Mean Air Time - Request Mean Air Time
  * @apiName GetMeanAirTime
  * @apiGroup Route 3
  *
@@ -97,7 +104,8 @@ app.get('/meanAirtime', async (req, res) => {
 
 
 /**
- * @api {get} /weatherObservations?origin={origin} Weather Observations - Request Weather Observations
+ * @api {get} /weatherObservations?origin={origin} 
+ * Weather Observations - Request Weather Observations
  * @apiName GetWeatherObservations
  * @apiGroup Route 4
  *
@@ -113,7 +121,25 @@ app.get('/weatherObservations', async (req, res) => {
 });
 
 /**
- * @api {get} /dailyMeanTemperature?origin={origin} Daily Mean Temperature - Request Daily Mean Temperature
+ * @api {get} /temperature?origin={origin} 
+ * All Measured Temperatures at Origin - Request All Measured Temperatures at Origin
+ * @apiName Get Daily Mean Temperature
+ * @apiGroup Route 7
+ *
+ * @apiParam {String} [origin] The Daily Mean Temperature for that Origin.
+ *
+ * @apiSuccess {json[]} daily_Mean_Temperature Returns an array of json 
+ * objects containing the average daily temperature for each day of the
+ * month and for each month of the year for each origin.
+ */
+app.get('/temperature', async (req, res) => {
+    let origin = req.query.origin;
+    let dailyMeanTemperaturePerOrigin = await service.temperature(origin);
+    res.json(dailyMeanTemperaturePerOrigin);
+});
+/**
+ * @api {get} /dailyMeanTemperature?origin={origin} 
+ * Daily Mean Temperature - Request Daily Mean Temperature
  * @apiName Get Daily Mean Temperature
  * @apiGroup Route 8 and 9
  *
