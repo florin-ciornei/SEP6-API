@@ -112,6 +112,23 @@ app.get('/weatherObservations', async (req, res) => {
     res.json(weatherObservationPerOrigin);
 });
 
+/**
+ * @api {get} /dailyMeanTemperature?origin={origin} Daily Mean Temperature - Request Daily Mean Temperature
+ * @apiName Get Daily Mean Temperature
+ * @apiGroup Route 8
+ *
+ * @apiParam {String} [origin] The Daily Mean Temperature for that Origin.
+ *
+ * @apiSuccess {json[]} daily_Mean_Temperature Returns an array of json 
+ * objects containing the average of the total time spent in 
+ * air divided by the total number of flights for each origin.
+ */
+app.get('/dailyMeanTemperature', async (req, res) => {
+    let origin = req.query.origin;
+    let dailyMeanTemperaturePerOrigin = await service.dailyMeanTemperature(origin);
+    res.json(dailyMeanTemperaturePerOrigin);
+});
+
 
 /**
  * @api {get} / Display Main Page

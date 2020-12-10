@@ -124,11 +124,50 @@ const weatherObservations = async (origin) => {
     return result;
 }
 
+const dailyMeanTemperature = async (origin) => {
+    let aggregatePipeline = [
+        { $group: {
+            _id: {
+                "origin": "$origin" ,
+                "month":"$month",
+                "day": "$day"
+            } ,
+            average: {
+                $avg: '$temp'
+            }
+        }},
+        {
+            $sort: {_id: 1, _id: 1 }
+        }
+    ];
+
+    if (origin != undefined) {
+        aggregatePipeline.unshift({
+            $match: {
+                origin: origin
+            }
+        });
+    }
+
+    let result = await Weather.aggregate(aggregatePipeline).exec();
+
+    result.forEach((o) => {
+        o.average = (o.average-32)/1.8;
+        o.origin = o._id.origin
+        o.month = o._id.month
+        o.day = o._id.day
+        delete o._id
+    });
+
+    return result;
+}
+
 
 module.exports = {
     getOrigins,
     getNumberOfFlightsPerMonth,
     countTopDestinations,
     meanAirtime,
-    weatherObservations
+    weatherObservations,
+    dailyMeanTemperature
 }
