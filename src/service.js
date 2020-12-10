@@ -1,6 +1,7 @@
 const Airport = require('../model/airport');
 const Flight = require('../model/flight');
 const Weather = require('../model/weather');
+const Plane = require('../model/plane');
 
 const getOrigins = async () => {
     let origins = await Airport.find({
@@ -179,6 +180,30 @@ const dailyMeanTemperature = async (origin) => {
     return result;
 }
 
+const numberOfPlanesOfEachModel = async (manufacturer) => {
+    let aggregatePipeline = [{
+        $match: {
+            manufacturer: manufacturer
+        }
+    }, {
+        $group: {
+            _id: "$model",
+            count: {
+                $sum: 1
+            }
+        }
+    }];
+
+    let result = await Plane.aggregate(aggregatePipeline).exec();
+
+    result.forEach(o=>{
+        o.model=o._id;
+        delete o._id;
+    });
+
+    return result;
+}
+
 
 module.exports = {
     getOrigins,
@@ -186,5 +211,6 @@ module.exports = {
     countTopDestinations,
     meanAirtime,
     weatherObservations,
-    dailyMeanTemperature
+    dailyMeanTemperature,
+    numberOfPlanesOfEachModel
 }
