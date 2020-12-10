@@ -155,6 +155,24 @@ app.get('/dailyMeanTemperature', async (req, res) => {
     res.json(dailyMeanTemperaturePerOrigin);
 });
 
+/**
+ * @api {get} /meanDepartureArrivalDelay?origin={origin} 
+ * Mean Departure Arrival Delay - Request Mean Departure Arrival Delay
+ * @apiName Get Mean Departure Arrival Delay
+ * @apiGroup Route 10
+ *
+ * @apiParam {String} [origin] The Mean Departure Arrival Delay for that Origin.
+ *
+ * @apiSuccess {json[]} mean_Dep_Arr_Delay Returns an array of json 
+ * objects containing the average Departure and Arrival Delay for 
+ * each of the three origins
+ */
+app.get('/meanDepartureArrivalDelay', async (req, res) => {
+    let origin = req.query.origin;
+    let meanDepartureArrivalDelayPerOrigin = await service.meanDepartureArrivalDelay(origin);
+    res.json(meanDepartureArrivalDelayPerOrigin);
+});
+
 app.get('/numberOfPlanesOfEachModel', async (req, res) => {
     let manufacturer = req.query.manufacturer;
 

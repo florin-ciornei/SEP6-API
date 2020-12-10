@@ -186,6 +186,39 @@ const dailyMeanTemperature = async (origin) => {
     return result;
 }
 
+const meanDepartureArrivalDelay = async (origin) => {
+    let aggregatePipeline = [
+        { $group: {
+            _id: {
+                "origin": "$origin" 
+            } ,
+            mean_Departure_Delay: {
+                $avg: '$dep_delay'
+            },
+            mean_Arrival_Delay: {
+                $avg: '$arr_delay'
+            }
+        }}
+    ];
+
+    if (origin != undefined) {
+        aggregatePipeline.unshift({
+            $match: {
+                origin: origin
+            }
+        });
+    }
+
+    let result = await Flight.aggregate(aggregatePipeline).exec();
+
+    result.forEach((o) => {
+        o.faa = o._id;
+        delete o._id;
+    });
+
+    return result;
+}
+
 const numberOfPlanesOfEachModel = async (manufacturer) => {
     let aggregatePipeline = [{
         $match: {
@@ -219,5 +252,6 @@ module.exports = {
     weatherObservations,
     dailyMeanTemperature,
     numberOfPlanesOfEachModel,
-    temperature
+    temperature,
+    meanDepartureArrivalDelay
 }

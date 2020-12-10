@@ -47,6 +47,42 @@
   },
   {
     "type": "get",
+    "url": "/meanDepartureArrivalDelay?origin={origin}",
+    "title": "Mean Departure Arrival Delay - Request Mean Departure Arrival Delay",
+    "name": "Get_Mean_Departure_Arrival_Delay",
+    "group": "Route_10",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "origin",
+            "description": "<p>The Mean Departure Arrival Delay for that Origin.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "json[]",
+            "optional": false,
+            "field": "mean_Dep_Arr_Delay",
+            "description": "<p>Returns an array of json objects containing the average Departure and Arrival Delay for each of the three origins</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/index.js",
+    "groupTitle": "Route_10"
+  },
+  {
+    "type": "get",
     "url": "/noOfFlightsPerMonth?origin={origin}",
     "title": "Flights per Month - Request Numeber of flights per month",
     "name": "GetNumeberOfFlights",
