@@ -50,12 +50,18 @@ const countTopDestinations = async (number, origin) => {
         $limit: number
     }];
 
+    let topDestinationsGlobal;
     if (origin != undefined) {
-        aggregatePipeline.unshift({
+        topDestinationsGlobal = await countTopDestinations(number);
+        let filter = {
             $match: {
+                dest: {
+                    $in: topDestinationsGlobal.map(o => o.faa)
+                },
                 origin: origin
             }
-        });
+        };
+        aggregatePipeline.unshift(filter);
     }
 
     let result = await Flight.aggregate(aggregatePipeline).exec();
@@ -64,6 +70,17 @@ const countTopDestinations = async (number, origin) => {
         o.faa = o._id;
         delete o._id;
     });
+
+    //if an origin doesn't have any flights to a destination, insert it with count:0, so it doesn't return an array with less elements
+    if (origin != undefined && result.length < topDestinationsGlobal.length) {
+        topDestinationsGlobal.forEach(d => {
+            if (result.filter(e => e.faa == d.faa).length == 0)
+                result.push({
+                    faa: d.faa,
+                    count: 0
+                });
+        });
+    }
 
     return result;
 }
@@ -120,7 +137,7 @@ const weatherObservations = async (origin) => {
         o.faa = o._id;
         delete o._id;
     });
-    
+
     return result;
 }
 
