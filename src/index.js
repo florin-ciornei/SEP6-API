@@ -22,7 +22,7 @@ app.use('/doc', express.static('doc'))
 /**
  * @api {get} /origins General Route - Origins - Request origins information
  * @apiName GetOrigins
- * @apiGroup Route 0 
+ * @apiGroup Route 00 
  * @apiSuccess {json[]} origins Returns an array of json objects containing all 
  * origins and their related information.
  */
@@ -36,7 +36,7 @@ app.get('/origins', async (req, res) => {
  * @api {get} /noOfFlightsPerMonth?origin={origin}
  * Flights per Month - Request Numeber of flights per month
  * @apiName GetNumeberOfFlights
- * @apiGroup Route 1 
+ * @apiGroup Route 01 
  *
  * @apiParam {String} [origin] The number of lfights per month for that Origin.
  *
@@ -55,7 +55,7 @@ app.get('/noOfFlightsPerMonth', async (req, res) => {
  * @api {get} /topDestinations?number={number}&origin={origin} 
  * Top Destinations - Request Top Destinations
  * @apiName GetTopDestinations
- * @apiGroup Route 2 
+ * @apiGroup Route 02 
  *
  * @apiParam {Number} number The numer of destinatinos to be returned
  * @apiParam {String} [origin] Top Destinations for that origin number 
@@ -88,7 +88,7 @@ app.get('/topDestinations', async (req, res) => {
  * @api {get} /meanAirtime?origin={origin} 
  * Mean Air Time - Request Mean Air Time
  * @apiName GetMeanAirTime
- * @apiGroup Route 3
+ * @apiGroup Route 03
  *
  * @apiParam {String} [origin] The Mean Air Time for that Origin.
  *
@@ -107,7 +107,7 @@ app.get('/meanAirtime', async (req, res) => {
  * @api {get} /weatherObservations?origin={origin} 
  * Weather Observations - Request Weather Observations
  * @apiName GetWeatherObservations
- * @apiGroup Route 4
+ * @apiGroup Route 04
  *
  * @apiParam {String} [origin] The total number of Weather Observations for that Origin.
  *
@@ -124,7 +124,7 @@ app.get('/weatherObservations', async (req, res) => {
  * @api {get} /temperature?origin={origin} 
  * All Measured Temperatures at Origin - Request All Measured Temperatures at Origin
  * @apiName Get Daily Mean Temperature
- * @apiGroup Route 7
+ * @apiGroup Route 07
  *
  * @apiParam {String} [origin] The Daily Mean Temperature for that Origin.
  *
@@ -141,7 +141,7 @@ app.get('/temperature', async (req, res) => {
  * @api {get} /dailyMeanTemperature?origin={origin} 
  * Daily Mean Temperature - Request Daily Mean Temperature
  * @apiName Get Daily Mean Temperature
- * @apiGroup Route 8 and 9
+ * @apiGroup Route 08 and 09
  *
  * @apiParam {String} [origin] The Daily Mean Temperature for that Origin.
  *
