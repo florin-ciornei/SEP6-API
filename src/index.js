@@ -20,20 +20,26 @@ app.use('/doc', express.static('doc'))
 
 
 /**
- * @api {get} /user/:id Request User information
- * @apiName GetUser
- * @apiGroup User
- *
- * @apiParam {Number} id User's unique ID.
- *
- * @apiSuccess {String} firstname Firstname of the User.
- * @apiSuccess {String} lastname  Lastname of the User.
+ * @api {get} /origins General Route - Origins - Request origins information
+ * @apiName GetOrigins
+ * @apiGroup Route 0 
+ * @apiSuccess {json[]} origins Returns an array of json objects containing all origins and their related information.
  */
 app.get('/origins', async (req, res) => {
     let origins = await service.getOrigins();
     res.json(origins);
 });
 
+
+/**
+ * @api {get} /noOfFlightsPerMonth?origin={origin} Flights per Month - Request Numeber of flights per month
+ * @apiName GetNumeberOfFlights
+ * @apiGroup Route 1 
+ *
+ * @apiParam {String} [origin] The number of lfights per month for that Origin.
+ *
+ * @apiSuccess {Numebr[]} number_Of_Flights Returns the numebr of flights.
+ */
 //without ?origin returns for all origins, with ?origin=... returns for that specific origin
 app.get('/noOfFlightsPerMonth', async (req, res) => {
     let origin = req.query.origin;
@@ -41,6 +47,20 @@ app.get('/noOfFlightsPerMonth', async (req, res) => {
     res.json(noOfFlightsPerMonth);
 });
 
+
+/**
+ * @api {get} /topDestinations?number={number}&origin={origin} Top Destinations - Request Top Destinations
+ * @apiName GetTopDestinations
+ * @apiGroup Route 2 
+ *
+ * @apiParam {Number} number The numer of destinatinos to be returned
+ * @apiParam {String} [origin] Top Destinations for that origin number of lfights per month for that Origin.
+ *
+ * @apiSuccess {json[]} top_Destinations Returns an array of json objects 
+ * containing the top destination airport codes and the number of flights 
+ * made for each destination. These are the most frequently visited 
+ * destinations in a descending order (i.e. Top Destinations).
+ */
 //without ?origin returns for all origins, with ?origin=... returns for that specific origin
 app.get('/topDestinations', async (req, res) => {
     if (req.query.number == undefined)
@@ -57,18 +77,49 @@ app.get('/topDestinations', async (req, res) => {
     res.json(topDesinations);
 });
 
+
+/**
+ * @api {get} /meanAirtime?origin={origin} Mean Air Time - Request Mean Air Time
+ * @apiName GetMeanAirTime
+ * @apiGroup Route 3
+ *
+ * @apiParam {String} [origin] The Mean Air Time for that Origin.
+ *
+ * @apiSuccess {json[]} mean_Air_Time Returns an array of json 
+ * objects containing the average of the total time spent in 
+ * air divided by the total number of flights for each origin.
+ */
 app.get('/meanAirtime', async (req, res) => {
     let origin = req.query.origin;
     let meanAirtimePerOrigin = await service.meanAirtime(origin);
     res.json(meanAirtimePerOrigin);
 });
 
+
+/**
+ * @api {get} /weatherObservations?origin={origin} Weather Observations - Request Weather Observations
+ * @apiName GetWeatherObservations
+ * @apiGroup Route 4
+ *
+ * @apiParam {String} [origin] The total number of Weather Observations for that Origin.
+ *
+ * @apiSuccess {json[]} weather_Observations Returns an array of json 
+ * objects containing the total number of weather observations per Origin.
+ */
 app.get('/weatherObservation', async (req, res) => {
     let origin = req.query.origin;
     let weatherObservationPerOrigin = await service.weatherObservation(origin);
     res.json(weatherObservationPerOrigin);
 });
 
+
+/**
+ * @api {get} / Display Main Page
+ * @apiName GetMainPage
+ * @apiGroup Main Page
+ *
+ * @apiSuccess {Object} mainPage Returns the main page to be displayed for our RESTfull API.
+ */
 app.get('/', (req, res) => {
     res.send("Welcome to our SEP6 project !!! A RESTful API built by " +
         "Andrei, Daniela and Florin. ");
