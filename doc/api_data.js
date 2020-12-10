@@ -195,5 +195,41 @@ define({ "api": [
     "version": "0.0.0",
     "filename": "src/index.js",
     "groupTitle": "Route_4"
+  },
+  {
+    "type": "get",
+    "url": "/dailyMeanTemperature?origin={origin}",
+    "title": "Daily Mean Temperature - Request Daily Mean Temperature",
+    "name": "Get_Daily_Mean_Temperature",
+    "group": "Route_8_and_9",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "origin",
+            "description": "<p>The Daily Mean Temperature for that Origin.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "json[]",
+            "optional": false,
+            "field": "daily_Mean_Temperature",
+            "description": "<p>Returns an array of json objects containing the average daily temperature for each day of the month and for each month of the year for each origin.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/index.js",
+    "groupTitle": "Route_8_and_9"
   }
 ] });
