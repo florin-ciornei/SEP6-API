@@ -103,34 +103,34 @@ describe("Test /meanAirtime", function () {
     });
 });
 
-describe("Test /weatherObservation", function () {
+describe("Test /weatherObservations", function () {
     test('There are 3 returned values', async () => {
-        let weatherObservations = await service.weatherObservation();
+        let weatherObservations = await service.weatherObservations();
         expect(weatherObservations.length).toBe(3);
     });
 
     test('There is only one JFK', async () => {
-        let weatherObservations = await service.weatherObservation();
+        let weatherObservations = await service.weatherObservations();
         expect(weatherObservations.filter((o) => o.faa === "JFK").length).toBe(1);
     });
 
     test('There is only one EWR', async () => {
-        let weatherObservations = await service.weatherObservation();
+        let weatherObservations = await service.weatherObservations();
         expect(weatherObservations.filter((o) => o.faa === "EWR").length).toBe(1);
     });
 
     test('There is only one LGA', async () => {
-        let weatherObservations = await service.weatherObservation();
+        let weatherObservations = await service.weatherObservations();
         expect(weatherObservations.filter((o) => o.faa === "LGA").length).toBe(1);
     });
 
     test('When "JFK" is passed as argument, a single value is returned', async () => {
-        let weatherObservations = await service.weatherObservation("JFK");
+        let weatherObservations = await service.weatherObservations("JFK");
         expect(weatherObservations.length).toBe(1);
     });
 
     test('When "JFK" is passed as argument, the returned value has faa JFK', async () => {
-        let weatherObservations = await service.weatherObservation("JFK");
+        let weatherObservations = await service.weatherObservations("JFK");
         expect(weatherObservations[0].faa).toBe("JFK");
     });
 });

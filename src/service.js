@@ -96,7 +96,7 @@ const meanAirtime = async (origin) => {
     return result;
 }
 
-const weatherObservation = async (origin) => {
+const weatherObservations = async (origin) => {
     let aggregatePipeline = [{
         $group: {
             _id: "$origin",
@@ -130,5 +130,5 @@ module.exports = {
     getNumberOfFlightsPerMonth,
     countTopDestinations,
     meanAirtime,
-    weatherObservation
+    weatherObservations
 }

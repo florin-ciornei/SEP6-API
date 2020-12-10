@@ -106,9 +106,9 @@ app.get('/meanAirtime', async (req, res) => {
  * @apiSuccess {json[]} weather_Observations Returns an array of json 
  * objects containing the total number of weather observations per Origin.
  */
-app.get('/weatherObservation', async (req, res) => {
+app.get('/weatherObservations', async (req, res) => {
     let origin = req.query.origin;
-    let weatherObservationPerOrigin = await service.weatherObservation(origin);
+    let weatherObservationPerOrigin = await service.weatherObservations(origin);
     res.json(weatherObservationPerOrigin);
 });
 
