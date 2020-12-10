@@ -128,15 +128,15 @@ app.get('/weatherObservations', async (req, res) => {
  *
  * @apiParam {String} [origin] The Daily Mean Temperature for that Origin.
  *
- * @apiSuccess {json[]} daily_Mean_Temperature Returns an array of json 
- * objects containing the average daily temperature for each day of the
- * month and for each month of the year for each origin.
+ * @apiSuccess {json[]} temperature Returns an array of json objects 
+ * containing ALL the temperature measurements registered at that origin.
  */
 app.get('/temperature', async (req, res) => {
     let origin = req.query.origin;
-    let dailyMeanTemperaturePerOrigin = await service.temperature(origin);
-    res.json(dailyMeanTemperaturePerOrigin);
+    let temperaturePerOrigin = await service.temperature(origin);
+    res.json(temperaturePerOrigin);
 });
+
 /**
  * @api {get} /dailyMeanTemperature?origin={origin} 
  * Daily Mean Temperature - Request Daily Mean Temperature

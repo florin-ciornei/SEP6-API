@@ -222,8 +222,8 @@ define({ "api": [
             "group": "Success 200",
             "type": "json[]",
             "optional": false,
-            "field": "daily_Mean_Temperature",
-            "description": "<p>Returns an array of json objects containing the average daily temperature for each day of the month and for each month of the year for each origin.</p>"
+            "field": "temperature",
+            "description": "<p>Returns an array of json objects containing ALL the temperature measurements registered at that origin.</p>"
           }
         ]
       }

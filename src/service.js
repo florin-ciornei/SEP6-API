@@ -142,6 +142,12 @@ const weatherObservations = async (origin) => {
     return result;
 }
 
+const temperature = async (origin) => {
+    let result = await Weather.find({'origin': origin}).select('temp').exec();
+
+    return result;
+}
+
 const dailyMeanTemperature = async (origin) => {
     let aggregatePipeline = [
         { $group: {
@@ -212,5 +218,6 @@ module.exports = {
     meanAirtime,
     weatherObservations,
     dailyMeanTemperature,
-    numberOfPlanesOfEachModel
+    numberOfPlanesOfEachModel,
+    temperature
 }
