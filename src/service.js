@@ -50,8 +50,9 @@ const countTopDestinations = async (number, origin) => {
         $limit: number
     }];
 
+    let topDestinationsGlobal;
     if (origin != undefined) {
-        let topDestinationsGlobal = await countTopDestinations(number);
+        topDestinationsGlobal = await countTopDestinations(number);
         let filter = {
             $match: {
                 dest: {
@@ -69,6 +70,17 @@ const countTopDestinations = async (number, origin) => {
         o.faa = o._id;
         delete o._id;
     });
+
+    //if an origin doesn't have any flights to a destination, insert it with count:0, so it doesn't return an array with less elements
+    if (origin != undefined && result.length < topDestinationsGlobal.length) {
+        topDestinationsGlobal.forEach(d => {
+            if (result.filter(e => e.faa == d.faa).length == 0)
+                result.push({
+                    faa: d.faa,
+                    count: 0
+                });
+        });
+    }
 
     return result;
 }
