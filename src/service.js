@@ -51,11 +51,16 @@ const countTopDestinations = async (number, origin) => {
     }];
 
     if (origin != undefined) {
-        aggregatePipeline.unshift({
+        let topDestinationsGlobal = await countTopDestinations(number);
+        let filter = {
             $match: {
+                dest: {
+                    $in: topDestinationsGlobal.map(o => o.faa)
+                },
                 origin: origin
             }
-        });
+        };
+        aggregatePipeline.unshift(filter);
     }
 
     let result = await Flight.aggregate(aggregatePipeline).exec();
@@ -120,7 +125,7 @@ const weatherObservations = async (origin) => {
         o.faa = o._id;
         delete o._id;
     });
-    
+
     return result;
 }
 
