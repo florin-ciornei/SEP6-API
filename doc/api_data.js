@@ -1,6 +1,141 @@
 define({ "api": [
   {
     "type": "get",
+    "url": "/meanAirtime",
+    "title": "Mean air time",
+    "group": "Flights",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "origin",
+            "description": "<p>If specified, the returned array contains a single object with that origin, otherwise returns for all origins.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n     {\n         \"average\":235.37256315953942,\n         \"faa\":\"ORD\"\n     },\n     ...\n]",
+          "type": "json[]"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/index.js",
+    "groupTitle": "Flights",
+    "name": "GetMeanairtime"
+  },
+  {
+    "type": "get",
+    "url": "/meanDepartureArrivalDelay",
+    "title": "Mean departure/arrival delay",
+    "group": "Flights",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "origin",
+            "description": "<p>The origin for which to return data. If not specified, data for all origins is returned.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n    {\n         \"mean_Departure_Delay\":8.75507169919908,\n         \"mean_Arrival_Delay\":-0.07456551525203721,\n         \"faa\":\"JFK\"\n    },\n    ...\n]",
+          "type": "json[]"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/index.js",
+    "groupTitle": "Flights",
+    "name": "GetMeandeparturearrivaldelay"
+  },
+  {
+    "type": "get",
+    "url": "/noOfFlightsPerMonth",
+    "title": "Flights per month",
+    "group": "Flights",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "origin",
+            "description": "<p>The number of flights per month for that origin. If not specified, returns for all origins.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[3371,3074,3589,3443,3540,3578,3738,3755,3465,3628,3356,3476] //exactly 12 numbers, one for each month",
+          "type": "json[]"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/index.js",
+    "groupTitle": "Flights",
+    "name": "GetNoofflightspermonth"
+  },
+  {
+    "type": "get",
+    "url": "/topDestinations",
+    "title": "Top destinations",
+    "group": "Flights",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "number",
+            "description": "<p>The numer of destinatinos to be returned.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "origin",
+            "description": "<p>Specify an origin to see how many flights it has to the top destinations. If empty, counts from all origins</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n     {\n         \"count\":13043,\n         \"faa\":\"ORD\"\n     },\n     ...\n]",
+          "type": "json[]"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/index.js",
+    "groupTitle": "Flights",
+    "name": "GetTopdestinations"
+  },
+  {
+    "type": "get",
     "url": "/manufacturersWithMinPlanes",
     "title": "Manufacturers with minimum planes",
     "group": "Manufacturers",
@@ -21,7 +156,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[\n    {\n         \"number_of_planes\":1630,\n         \"manufacturer\":\"BOEING\"\n    }\n]",
+          "content": "HTTP/1.1 200 OK\n[\n    {\n         \"number_of_planes\":1630,\n         \"manufacturer\":\"BOEING\"\n    },\n    ...\n]",
           "type": "json[]"
         }
       ]
@@ -53,7 +188,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[\n    {\n         \"manufacturer\": \"AIRBUS\",\n         \"count\": 125\n    }\n]",
+          "content": "HTTP/1.1 200 OK\n[\n    {\n         \"manufacturer\": \"AIRBUS\",\n         \"count\": 125\n    },\n    ...\n]",
           "type": "json[]"
         }
       ]
@@ -85,7 +220,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n[\n    {\n         \"count\":127,\n         \"model\":\"A320-232\"\n    }\n]",
+          "content": "HTTP/1.1 200 OK\n[\n    {\n         \"count\":127,\n         \"model\":\"A320-232\"\n    },\n    ...\n]",
           "type": "json[]"
         }
       ]
@@ -98,182 +233,26 @@ define({ "api": [
   {
     "type": "get",
     "url": "/origins",
-    "title": "General Route - Origins - Request origins information",
-    "name": "GetOrigins",
-    "group": "Route_00",
+    "title": "Get all origins",
+    "group": "Origins",
     "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "json[]",
-            "optional": false,
-            "field": "origins",
-            "description": "<p>Returns an array of json objects containing all origins and their related information.</p>"
-          }
-        ]
-      }
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n    {\n         \"_id\":\"5fccb4affe083721fcd39450\",\n         \"faa\":\"EWR\",\n         \"name\":\"Newark Liberty Intl\",\n         \"lat\":40.6925,\n         \"lon\":-74.168667,\n         \"alt\":18,\n         \"tz\":-5,\n         \"dst\":\"A\",\n         \"tzone\":\"America/New_York\",\n         \"__v\":0\n     },\n     ...\n]",
+          "type": "json[]"
+        }
+      ]
     },
     "version": "0.0.0",
     "filename": "src/index.js",
-    "groupTitle": "Route_00"
+    "groupTitle": "Origins",
+    "name": "GetOrigins"
   },
   {
     "type": "get",
-    "url": "/noOfFlightsPerMonth?origin={origin}",
-    "title": "Flights per Month - Request Numeber of flights per month",
-    "name": "GetNumeberOfFlights",
-    "group": "Route_01",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "origin",
-            "description": "<p>The number of lfights per month for that Origin.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "Numebr[]",
-            "optional": false,
-            "field": "number_Of_Flights",
-            "description": "<p>Returns the numebr of flights.</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "src/index.js",
-    "groupTitle": "Route_01"
-  },
-  {
-    "type": "get",
-    "url": "/topDestinations?number={number}&origin={origin}",
-    "title": "Top Destinations - Request Top Destinations",
-    "name": "GetTopDestinations",
-    "group": "Route_02",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "number",
-            "description": "<p>The numer of destinatinos to be returned</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "origin",
-            "description": "<p>Top Destinations for that origin number of lfights per month for that Origin.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "json[]",
-            "optional": false,
-            "field": "top_Destinations",
-            "description": "<p>Returns an array of json objects containing the top destination airport codes and the number of flights made for each destination. These are the most frequently visited destinations in a descending order (i.e. Top Destinations).</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "src/index.js",
-    "groupTitle": "Route_02"
-  },
-  {
-    "type": "get",
-    "url": "/meanAirtime?origin={origin}",
-    "title": "Mean Air Time - Request Mean Air Time",
-    "name": "GetMeanAirTime",
-    "group": "Route_03",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "origin",
-            "description": "<p>The Mean Air Time for that Origin.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "json[]",
-            "optional": false,
-            "field": "mean_Air_Time",
-            "description": "<p>Returns an array of json objects containing the average of the total time spent in air divided by the total number of flights for each origin.</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "src/index.js",
-    "groupTitle": "Route_03"
-  },
-  {
-    "type": "get",
-    "url": "/meanDepartureArrivalDelay?origin={origin}",
-    "title": "Mean Departure Arrival Delay - Request Mean Departure Arrival Delay",
-    "name": "Get_Mean_Departure_Arrival_Delay",
-    "group": "Route_10",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "origin",
-            "description": "<p>The Mean Departure Arrival Delay for that Origin.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "json[]",
-            "optional": false,
-            "field": "mean_Dep_Arr_Delay",
-            "description": "<p>Returns an array of json objects containing the average Departure and Arrival Delay for each of the three origins</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "src/index.js",
-    "groupTitle": "Route_10"
-  },
-  {
-    "type": "get",
-    "url": "/weatherObservations?origin={origin}",
-    "title": "Weather Observations - Request Weather Observations",
-    "name": "GetWeatherObservations",
+    "url": "/dailyMeanTemperature",
+    "title": "Daily mean temperature",
     "group": "Weather",
     "parameter": {
       "fields": {
@@ -283,33 +262,61 @@ define({ "api": [
             "type": "String",
             "optional": true,
             "field": "origin",
-            "description": "<p>The total number of Weather Observations for that Origin.</p>"
+            "description": "<p>If not specified, returns data for all origins, otherwise returns only for this origin.</p>"
           }
         ]
       }
     },
     "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n     {\n         \"origin\":\"JFK\",\n         \"month\":1,\n         \"day\":1,\n         \"average\":3.2999999999999985\n     },\n     ...\n]",
+          "type": "json[]"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/index.js",
+    "groupTitle": "Weather",
+    "name": "GetDailymeantemperature"
+  },
+  {
+    "type": "get",
+    "url": "/temperature",
+    "title": "Get temperatures",
+    "group": "Weather",
+    "parameter": {
       "fields": {
-        "Success 200": [
+        "Parameter": [
           {
-            "group": "Success 200",
-            "type": "json[]",
+            "group": "Parameter",
+            "type": "String",
             "optional": false,
-            "field": "weather_Observations",
-            "description": "<p>Returns an array of json objects containing the total number of weather observations per Origin.</p>"
+            "field": "origin",
+            "description": "<p>The origin for which to return the data.</p>"
           }
         ]
       }
     },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n     {\n         \"origin\":\"JFK\",\n         \"month\":1,\n         \"day\":1,\n         \"hour\":0,\n         \"temperature\":3.2999999999999985\n     },\n     ...\n]",
+          "type": "json[]"
+        }
+      ]
+    },
     "version": "0.0.0",
     "filename": "src/index.js",
-    "groupTitle": "Weather"
+    "groupTitle": "Weather",
+    "name": "GetTemperature"
   },
   {
     "type": "get",
-    "url": "/temperature?origin={origin}",
-    "title": "All Measured Temperatures at Origin - Request All Measured Temperatures at Origin",
-    "name": "Get_Daily_Mean_Temperature",
+    "url": "/weatherObservations",
+    "title": "Weather observations count",
     "group": "Weather",
     "parameter": {
       "fields": {
@@ -319,63 +326,24 @@ define({ "api": [
             "type": "String",
             "optional": true,
             "field": "origin",
-            "description": "<p>The Daily Mean Temperature for that Origin.</p>"
+            "description": "<p>If specified, the returned array contains data only for the specified origins, otherwise it contains data for all the origins.</p>"
           }
         ]
       }
     },
     "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "json[]",
-            "optional": false,
-            "field": "temperature",
-            "description": "<p>Returns an array of json objects containing ALL the temperature measurements registered at that origin.</p>"
-          }
-        ]
-      }
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n     {\n         \"count\":8700,\n         \"faa\":\"JFK\"\n     },\n     ...\n]",
+          "type": "json[]"
+        }
+      ]
     },
     "version": "0.0.0",
     "filename": "src/index.js",
-    "groupTitle": "Weather"
-  },
-  {
-    "type": "get",
-    "url": "/dailyMeanTemperature?origin={origin}",
-    "title": "Daily Mean Temperature - Request Daily Mean Temperature",
-    "name": "Get_Daily_Mean_Temperature",
-    "group": "Weather",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "origin",
-            "description": "<p>The Daily Mean Temperature for that Origin.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "json[]",
-            "optional": false,
-            "field": "daily_Mean_Temperature",
-            "description": "<p>Returns an array of json objects containing the average daily temperature for each day of the month and for each month of the year for each origin.</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "src/index.js",
-    "groupTitle": "Weather"
+    "groupTitle": "Weather",
+    "name": "GetWeatherobservations"
   },
   {
     "type": "get",

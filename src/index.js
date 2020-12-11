@@ -20,11 +20,26 @@ app.use('/doc', express.static('doc'))
 
 
 /**
- * @api {get} /origins General Route - Origins - Request origins information
- * @apiName GetOrigins
- * @apiGroup Route 00 
- * @apiSuccess {json[]} origins Returns an array of json objects containing all 
- * origins and their related information.
+ * @api {get} /origins
+ * Get all origins
+ * @apiGroup Origins
+ * @apiSuccessExample {json[]} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *         {
+ *              "_id":"5fccb4affe083721fcd39450",
+ *              "faa":"EWR",
+ *              "name":"Newark Liberty Intl",
+ *              "lat":40.6925,
+ *              "lon":-74.168667,
+ *              "alt":18,
+ *              "tz":-5,
+ *              "dst":"A",
+ *              "tzone":"America/New_York",
+ *              "__v":0
+ *          },
+ *          ...
+ *     ]
  */
 app.get('/origins', async (req, res) => {
     let origins = await service.getOrigins();
@@ -33,17 +48,16 @@ app.get('/origins', async (req, res) => {
 
 
 /**
- * @api {get} /noOfFlightsPerMonth?origin={origin}
- * Flights per Month - Request Numeber of flights per month
- * @apiName GetNumeberOfFlights
- * @apiGroup Route 01 
+ * @api {get} /noOfFlightsPerMonth
+ * Flights per month
+ * @apiGroup Flights
  *
- * @apiParam {String} [origin] The number of lfights per month for that Origin.
+ * @apiParam {String} [origin] The number of flights per month for that origin. If not specified, returns for all origins.
  *
- * @apiSuccess {Numebr[]} number_Of_Flights Returns the numebr of flights.
+ * @apiSuccessExample {json[]} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [3371,3074,3589,3443,3540,3578,3738,3755,3465,3628,3356,3476] //exactly 12 numbers, one for each month
  */
-//without ?origin returns for all origins, with ?origin=... returns for that 
-//specific origin
 app.get('/noOfFlightsPerMonth', async (req, res) => {
     let origin = req.query.origin;
     let noOfFlightsPerMonth = await service.getNumberOfFlightsPerMonth(origin);
@@ -52,22 +66,23 @@ app.get('/noOfFlightsPerMonth', async (req, res) => {
 
 
 /**
- * @api {get} /topDestinations?number={number}&origin={origin} 
- * Top Destinations - Request Top Destinations
- * @apiName GetTopDestinations
- * @apiGroup Route 02 
+ * @api {get} /topDestinations
+ * Top destinations
+ * @apiGroup Flights
  *
- * @apiParam {Number} number The numer of destinatinos to be returned
- * @apiParam {String} [origin] Top Destinations for that origin number 
- * of lfights per month for that Origin.
+ * @apiParam {Number} number The numer of destinatinos to be returned.
+ * @apiParam {String} [origin] Specify an origin to see how many flights it has to the top destinations. If empty, counts from all origins
  *
- * @apiSuccess {json[]} top_Destinations Returns an array of json objects 
- * containing the top destination airport codes and the number of flights 
- * made for each destination. These are the most frequently visited 
- * destinations in a descending order (i.e. Top Destinations).
+ * @apiSuccessExample {json[]} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *          {
+ *              "count":13043,
+ *              "faa":"ORD"
+ *          },
+ *          ...
+ *     ]
  */
-//without ?origin returns for all origins, with ?origin=... returns 
-//for that specific origin
 app.get('/topDestinations', async (req, res) => {
     if (req.query.number == undefined)
         return res.status(400).send("Please specify the number " +
@@ -85,16 +100,21 @@ app.get('/topDestinations', async (req, res) => {
 
 
 /**
- * @api {get} /meanAirtime?origin={origin} 
- * Mean Air Time - Request Mean Air Time
- * @apiName GetMeanAirTime
- * @apiGroup Route 03
+ * @api {get} /meanAirtime
+ * Mean air time
+ * @apiGroup Flights
  *
- * @apiParam {String} [origin] The Mean Air Time for that Origin.
- *
- * @apiSuccess {json[]} mean_Air_Time Returns an array of json 
- * objects containing the average of the total time spent in 
- * air divided by the total number of flights for each origin.
+ * @apiParam {String} [origin] If specified, the returned array contains a single object with that origin, otherwise returns for all origins.
+ * 
+ * @apiSuccessExample {json[]} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *          {
+ *              "average":235.37256315953942,
+ *              "faa":"ORD"
+ *          },
+ *          ...
+ *     ]
  */
 app.get('/meanAirtime', async (req, res) => {
     let origin = req.query.origin;
@@ -104,15 +124,21 @@ app.get('/meanAirtime', async (req, res) => {
 
 
 /**
- * @api {get} /weatherObservations?origin={origin} 
- * Weather Observations - Request Weather Observations
- * @apiName GetWeatherObservations
+ * @api {get} /weatherObservations
+ * Weather observations count
  * @apiGroup Weather
  *
- * @apiParam {String} [origin] The total number of Weather Observations for that Origin.
+ * @apiParam {String} [origin] If specified, the returned array contains data only for the specified origins, otherwise it contains data for all the origins.
  *
- * @apiSuccess {json[]} weather_Observations Returns an array of json 
- * objects containing the total number of weather observations per Origin.
+ * @apiSuccessExample {json[]} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *          {
+ *              "count":8700,
+ *              "faa":"JFK"
+ *          },
+ *          ...
+ *     ]
  */
 app.get('/weatherObservations', async (req, res) => {
     let origin = req.query.origin;
@@ -121,33 +147,51 @@ app.get('/weatherObservations', async (req, res) => {
 });
 
 /**
- * @api {get} /temperature?origin={origin} 
- * All Measured Temperatures at Origin - Request All Measured Temperatures at Origin
- * @apiName Get Daily Mean Temperature
+ * @api {get} /temperature
+ * Get temperatures
  * @apiGroup Weather
  *
- * @apiParam {String} [origin] The Daily Mean Temperature for that Origin.
+ * @apiParam {String} origin The origin for which to return the data.
  *
- * @apiSuccess {json[]} temperature Returns an array of json objects 
- * containing ALL the temperature measurements registered at that origin.
+ * @apiSuccessExample {json[]} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *          {
+ *              "origin":"JFK",
+ *              "month":1,
+ *              "day":1,
+ *              "hour":0,
+ *              "temperature":3.2999999999999985
+ *          },
+ *          ...
+ *     ]
  */
 app.get('/temperature', async (req, res) => {
     let origin = req.query.origin;
+    if (origin == undefined)
+        return res.status(400).send("Please specify the origin as query parameter. Ex: ?origin=JFK");
     let temperaturePerOrigin = await service.temperature(origin);
     res.json(temperaturePerOrigin);
 });
 
 /**
- * @api {get} /dailyMeanTemperature?origin={origin} 
- * Daily Mean Temperature - Request Daily Mean Temperature
- * @apiName Get Daily Mean Temperature
+ * @api {get} /dailyMeanTemperature
+ * Daily mean temperature
  * @apiGroup Weather
  *
- * @apiParam {String} [origin] The Daily Mean Temperature for that Origin.
+ * @apiParam {String} [origin] If not specified, returns data for all origins, otherwise returns only for this origin.
  *
- * @apiSuccess {json[]} daily_Mean_Temperature Returns an array of json 
- * objects containing the average daily temperature for each day of the
- * month and for each month of the year for each origin.
+ * @apiSuccessExample {json[]} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *          {
+ *              "origin":"JFK",
+ *              "month":1,
+ *              "day":1,
+ *              "average":3.2999999999999985
+ *          },
+ *          ...
+ *     ]
  */
 app.get('/dailyMeanTemperature', async (req, res) => {
     let origin = req.query.origin;
@@ -156,16 +200,22 @@ app.get('/dailyMeanTemperature', async (req, res) => {
 });
 
 /**
- * @api {get} /meanDepartureArrivalDelay?origin={origin} 
- * Mean Departure Arrival Delay - Request Mean Departure Arrival Delay
- * @apiName Get Mean Departure Arrival Delay
- * @apiGroup Route 10
+ * @api {get} /meanDepartureArrivalDelay 
+ * Mean departure/arrival delay
+ * @apiGroup Flights
  *
- * @apiParam {String} [origin] The Mean Departure Arrival Delay for that Origin.
+ * @apiParam {String} [origin] The origin for which to return data. If not specified, data for all origins is returned.
  *
- * @apiSuccess {json[]} mean_Dep_Arr_Delay Returns an array of json 
- * objects containing the average Departure and Arrival Delay for 
- * each of the three origins
+ * @apiSuccessExample {json[]} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *         {
+ *              "mean_Departure_Delay":8.75507169919908,
+ *              "mean_Arrival_Delay":-0.07456551525203721,
+ *              "faa":"JFK"
+ *         },
+ *         ...
+ *     ]
  */
 app.get('/meanDepartureArrivalDelay', async (req, res) => {
     let origin = req.query.origin;
@@ -184,7 +234,8 @@ app.get('/meanDepartureArrivalDelay', async (req, res) => {
  *         {
  *              "number_of_planes":1630,
  *              "manufacturer":"BOEING"
- *         }
+ *         },
+ *         ...
  *     ]
  */
 app.get('/manufacturersWithMinPlanes', async (req, res) => {
@@ -204,7 +255,8 @@ app.get('/manufacturersWithMinPlanes', async (req, res) => {
  *         {
  *              "count":127,
  *              "model":"A320-232"
- *         }
+ *         },
+ *         ...
  *     ]
  */
 app.get('/numberOfPlanesOfEachModel', async (req, res) => {
@@ -228,7 +280,8 @@ app.get('/numberOfPlanesOfEachModel', async (req, res) => {
  *         {
  *              "manufacturer": "AIRBUS",
  *              "count": 125
- *         }
+ *         },
+ *         ...
  *     ]
  */
 app.get('/noOfFlightsPerManufacter', async (req, res) => {
