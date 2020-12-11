@@ -15,7 +15,7 @@ mongoose.connect('mongodb+srv://sepMongo:mongo@cluster0.besa8.mongodb.net/sep6?r
         console.log("Connected to MongoDB via Mongoose");
     });
 
-    // Tests for Route 0
+// Tests for Route 0
 describe("Test /origins", function () {
     test('Origins returns 3 origins', async () => {
         let origins = await service.getOrigins();
@@ -166,28 +166,65 @@ describe("Test /temperature", function () {
 
 // Tests for Route 8 AND 9
 describe("Test /dailyMeanTemperature", function () {
-    test('There are 93 values returned for passing no argument/parameter', async () => {
+    test('There are 1092 values returned for passing no argument/parameter', async () => {
         let dailyMeanTemperature = await service.dailyMeanTemperature();
-        expect(dailyMeanTemperature.length).toBe(93);
+        expect(dailyMeanTemperature.length).toBe(1092);
     });
 
-    test('There are 8711 dailyMeanTemperature observations at JFK', async () => {
+    test('There are 364 dailyMeanTemperature observations at JFK', async () => {
         let dailyMeanTemperature = await service.dailyMeanTemperature("JFK");
-        expect(dailyMeanTemperature.length).toBe(8711);
+        expect(dailyMeanTemperature.length).toBe(364);
     });
 
-    test('There are 8711 dailyMeanTemperature observations at LGA', async () => {
+    test('There are 364 dailyMeanTemperature observations at LGA', async () => {
         let dailyMeanTemperature = await service.dailyMeanTemperature("LGA");
-        expect(dailyMeanTemperature.length).toBe(8711);
+        expect(dailyMeanTemperature.length).toBe(364);
     });
     
-    test('There are 8708 dailyMeanTemperature observations at EWR', async () => {
+    test('There are 364 dailyMeanTemperature observations at EWR', async () => {
         let dailyMeanTemperature = await service.dailyMeanTemperature("EWR");
-        expect(dailyMeanTemperature.length).toBe(8708);
+        expect(dailyMeanTemperature.length).toBe(364);
     });
 });
 
 // Tests for Route 10
+describe("Test /meanDepartureArrivalDelay", function () {
+    test('There are 3 values returned for passing no argument/parameter', async () => {
+        let meanDepartureArrivalDelay = await service.meanDepartureArrivalDelay();
+        expect(meanDepartureArrivalDelay.length).toBe(3);
+    });
+
+    test('There is 1 value returned for passing JFK as argument', async () => {
+        let meanDepartureArrivalDelay = await service.meanDepartureArrivalDelay("JFK");
+        expect(meanDepartureArrivalDelay.length).toBe(1);
+    });
+
+    test('There is 1 value returned for passing LGA as argument', async () => {
+        let meanDepartureArrivalDelay = await service.meanDepartureArrivalDelay("LGA");
+        expect(meanDepartureArrivalDelay.length).toBe(1);
+    });
+    
+    test('There is 1 value returned for passing EWR as argument', async () => {
+        let meanDepartureArrivalDelay = await service.meanDepartureArrivalDelay("EWR");
+        expect(meanDepartureArrivalDelay.length).toBe(1);
+    });
+
+    test('When "JFK" is passed as argument, the returned value has faa JFK', async () => {
+        let weatherObservations = await service.weatherObservations("JFK");
+        expect(weatherObservations[0].faa).toBe("JFK");
+    });
+    
+    test('When "LGA" is passed as argument, the returned value has faa LGA', async () => {
+        let weatherObservations = await service.weatherObservations("LGA");
+        expect(weatherObservations[0].faa).toBe("LGA");
+    });
+    
+    test('When "EWR" is passed as argument, the returned value has faa EWR', async () => {
+        let weatherObservations = await service.weatherObservations("EWR");
+        expect(weatherObservations[0].faa).toBe("EWR");
+    });
+    
+});
 
 // Tests for Route 11
 
