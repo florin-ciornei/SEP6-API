@@ -323,7 +323,15 @@ const numberOfFlightsPerManufacturerWithMinPlanes = async (minPlanes) => {
         flights[manufacturer] = flights[manufacturer] == undefined ? o.count : flights[manufacturer] + o.count;
     });
 
-    return flights;
+    //extract all the flights from object as separate objects
+    result = Object.keys(flights).map(key => {
+        return {
+            manufacturer: key,
+            flights: flights[key]
+        };
+    })
+
+    return result;
 }
 
 
