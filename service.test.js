@@ -141,6 +141,28 @@ describe("Test /weatherObservations", function () {
 });
 
 // Tests for Route 7
+describe("Test /temperature", function () {
+    test('There is no returned value for passing no argument/parameter', async () => {
+        let temperature = await service.temperature();
+        expect(temperature.length).toBe(0);
+    });
+
+    test('There are 8711 temperature observations at JFK', async () => {
+        let temperature = await service.temperature("JFK");
+        expect(temperature.length).toBe(8711);
+    });
+
+    test('There are 8711 temperature observations at LGA', async () => {
+        let temperature = await service.temperature("LGA");
+        expect(temperature.length).toBe(8711);
+    });
+    
+    test('There are 8708 temperature observations at EWR', async () => {
+        let temperature = await service.temperature("EWR");
+        expect(temperature.length).toBe(8708);
+    });
+});
+
 
 // Tests for Route 8 AND 9
 
