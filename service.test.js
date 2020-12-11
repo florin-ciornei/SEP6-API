@@ -165,6 +165,27 @@ describe("Test /temperature", function () {
 
 
 // Tests for Route 8 AND 9
+describe("Test /dailyMeanTemperature", function () {
+    test('There are 93 values returned for passing no argument/parameter', async () => {
+        let dailyMeanTemperature = await service.dailyMeanTemperature();
+        expect(dailyMeanTemperature.length).toBe(93);
+    });
+
+    test('There are 8711 dailyMeanTemperature observations at JFK', async () => {
+        let dailyMeanTemperature = await service.dailyMeanTemperature("JFK");
+        expect(dailyMeanTemperature.length).toBe(8711);
+    });
+
+    test('There are 8711 dailyMeanTemperature observations at LGA', async () => {
+        let dailyMeanTemperature = await service.dailyMeanTemperature("LGA");
+        expect(dailyMeanTemperature.length).toBe(8711);
+    });
+    
+    test('There are 8708 dailyMeanTemperature observations at EWR', async () => {
+        let dailyMeanTemperature = await service.dailyMeanTemperature("EWR");
+        expect(dailyMeanTemperature.length).toBe(8708);
+    });
+});
 
 // Tests for Route 10
 
