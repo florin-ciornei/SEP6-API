@@ -221,7 +221,7 @@ const meanDepartureArrivalDelay = async (origin) => {
     let result = await Flight.aggregate(aggregatePipeline).exec();
 
     result.forEach((o) => {
-        o.faa = o._id;
+        o.faa = o._id.origin;
         delete o._id;
     });
 
