@@ -107,7 +107,7 @@ app.get('/meanAirtime', async (req, res) => {
  * @api {get} /weatherObservations?origin={origin} 
  * Weather Observations - Request Weather Observations
  * @apiName GetWeatherObservations
- * @apiGroup Route 04
+ * @apiGroup Weather
  *
  * @apiParam {String} [origin] The total number of Weather Observations for that Origin.
  *
@@ -124,7 +124,7 @@ app.get('/weatherObservations', async (req, res) => {
  * @api {get} /temperature?origin={origin} 
  * All Measured Temperatures at Origin - Request All Measured Temperatures at Origin
  * @apiName Get Daily Mean Temperature
- * @apiGroup Route 07
+ * @apiGroup Weather
  *
  * @apiParam {String} [origin] The Daily Mean Temperature for that Origin.
  *
@@ -141,7 +141,7 @@ app.get('/temperature', async (req, res) => {
  * @api {get} /dailyMeanTemperature?origin={origin} 
  * Daily Mean Temperature - Request Daily Mean Temperature
  * @apiName Get Daily Mean Temperature
- * @apiGroup Route 08 and 09
+ * @apiGroup Weather
  *
  * @apiParam {String} [origin] The Daily Mean Temperature for that Origin.
  *
@@ -174,16 +174,18 @@ app.get('/meanDepartureArrivalDelay', async (req, res) => {
 });
 
 /**
- * @api {get} /manufacturersWithMinPlanes?minPlanes={minPlanes}
- * Manufacturers With Min Planes - Request Manufacturers With Min Planes
- * @apiName Get Manufacturers With Min Planes
- * @apiGroup Route 11
- *
- * @apiParam {String} minPlanes The minimum number of planes a manufacturer must posses.
- *
- * @apiSuccess {json[]} man_With_Min_Planes Returns an array of json 
- * objects containing the manufacturers that have more than the 
- * specified number of planes
+ * @api {get} /manufacturersWithMinPlanes
+ * Manufacturers with minimum planes
+ * @apiGroup Manufacturers
+ * @apiParam {Number} minPlanes Minimum number of planes
+ * @apiSuccessExample {json[]} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *         {
+ *              "number_of_planes":1630,
+ *              "manufacturer":"BOEING"
+ *         }
+ *     ]
  */
 app.get('/manufacturersWithMinPlanes', async (req, res) => {
     let minPlanes = req.query.minPlanes;
@@ -191,6 +193,20 @@ app.get('/manufacturersWithMinPlanes', async (req, res) => {
     res.json(manufacturersWithMinPlanesPerOrigin);
 });
 
+/**
+ * @api {get} /numberOfPlanesOfEachModel
+ * Number of planes of each model
+ * @apiGroup Manufacturers
+ * @apiParam {String} manufacturer The manufacturer whose planes will be counted.
+ * @apiSuccessExample {json[]} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *         {
+ *              "count":127,
+ *              "model":"A320-232"
+ *         }
+ *     ]
+ */
 app.get('/numberOfPlanesOfEachModel', async (req, res) => {
     let manufacturer = req.query.manufacturer;
 
@@ -201,16 +217,20 @@ app.get('/numberOfPlanesOfEachModel', async (req, res) => {
     res.json(data);
 });
 
-app.get('/numberOfPlanesOfEachModel', async (req, res) => {
-    let manufacturer = req.query.manufacturer;
-
-    if (manufacturer == undefined)
-        return res.status(400).send("Please add manufacturer query parameter, ex: ?manufacturer=AIRBUS%20INDUSTRIE")
-
-    let data = await service.numberOfPlanesOfEachModel(manufacturer);
-    res.json(data);
-});
-
+/**
+ * @api {get} /noOfFlightsPerManufacter
+ * Number of flights per manufacturer
+ * @apiGroup Manufacturers
+ * @apiParam {Number} minPlanes Number of minimum planes a manufacturer must have to be included in the counting.
+ * @apiSuccessExample {json[]} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     [
+ *         {
+ *              "manufacturer": "AIRBUS",
+ *              "count": 125
+ *         }
+ *     ]
+ */
 app.get('/noOfFlightsPerManufacter', async (req, res) => {
     if (req.query.minPlanes == undefined)
         return res.status(400).send("Please specify the number " +
@@ -227,7 +247,7 @@ app.get('/noOfFlightsPerManufacter', async (req, res) => {
 /**
  * @api {get} / Display Main Page
  * @apiName GetMainPage
- * @apiGroup Main Page
+ * @apiGroup Welcome
  *
  * @apiSuccess {Object} mainPage Returns the main page to be displayed for our RESTfull API.
  */
