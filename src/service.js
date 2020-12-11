@@ -143,25 +143,31 @@ const weatherObservations = async (origin) => {
 }
 
 const temperature = async (origin) => {
-    let result = await Weather.find({'origin': origin}).select('temp').exec();
+    let result = await Weather.find({
+        'origin': origin
+    }).select('temp').exec();
 
-    return result.map(o=>(o.temp-32)/1.8);
+    return result.map(o => (o.temp - 32) / 1.8);
 }
 
 const dailyMeanTemperature = async (origin) => {
-    let aggregatePipeline = [
-        { $group: {
-            _id: {
-                "origin": "$origin" ,
-                "month":"$month",
-                "day": "$day"
-            } ,
-            average: {
-                $avg: '$temp'
+    let aggregatePipeline = [{
+            $group: {
+                _id: {
+                    "origin": "$origin",
+                    "month": "$month",
+                    "day": "$day"
+                },
+                average: {
+                    $avg: '$temp'
+                }
             }
-        }},
+        },
         {
-            $sort: {_id: 1, _id: 1 }
+            $sort: {
+                _id: 1,
+                _id: 1
+            }
         }
     ];
 
@@ -176,7 +182,7 @@ const dailyMeanTemperature = async (origin) => {
     let result = await Weather.aggregate(aggregatePipeline).exec();
 
     result.forEach((o) => {
-        o.average = (o.average-32)/1.8;
+        o.average = (o.average - 32) / 1.8;
         o.origin = o._id.origin
         o.month = o._id.month
         o.day = o._id.day
@@ -187,19 +193,19 @@ const dailyMeanTemperature = async (origin) => {
 }
 
 const meanDepartureArrivalDelay = async (origin) => {
-    let aggregatePipeline = [
-        { $group: {
+    let aggregatePipeline = [{
+        $group: {
             _id: {
-                "origin": "$origin" 
-            } ,
+                "origin": "$origin"
+            },
             mean_Departure_Delay: {
                 $avg: '$dep_delay'
             },
             mean_Arrival_Delay: {
                 $avg: '$arr_delay'
             }
-        }}
-    ];
+        }
+    }];
 
     if (origin != undefined) {
         aggregatePipeline.unshift({
@@ -221,23 +227,26 @@ const meanDepartureArrivalDelay = async (origin) => {
 
 const manufacturersWithMinPlanes = async (minPlanes) => {
     let aggregatePipeline = [{
-        $group: {
-            _id: "$manufacturer",
-            number_of_planes: {
-                $sum: 1
+            $group: {
+                _id: "$manufacturer",
+                number_of_planes: {
+                    $sum: 1
+                }
+            },
+        },
+        {
+            $sort: {
+                number_of_planes: -1
             }
-        },      
-    },
-    {
-        $sort: {number_of_planes: -1 }
-    }];
+        }
+    ];
 
     let result = await Plane.aggregate(aggregatePipeline).exec();
 
-    result = result.filter((o)=>{
-        return o.number_of_planes > 200
+    result = result.filter((o) => {
+        return o.number_of_planes > minPlanes
     });
-    
+
     result.forEach((o) => {
         o.manufacturer = o._id;
         delete o._id;
@@ -262,10 +271,65 @@ const numberOfPlanesOfEachModel = async (manufacturer) => {
 
     let result = await Plane.aggregate(aggregatePipeline).exec();
 
-    result.forEach(o=>{
-        o.model=o._id;
+    result.forEach(o => {
+        o.model = o._id;
         delete o._id;
     });
+
+    return result;
+}
+
+const numberOfFlightsPerManufacturerWithMinPlanes = async (minPlanes) => {
+    //first of all find the manufacturers that have at least minPlanes
+    let manufacturers = await manufacturersWithMinPlanes(minPlanes);
+
+    //find the tailNums based on the above retrieved manufacturers
+    let planes = (await Plane.find({
+        $or: manufacturers.map((m) => {
+            return {
+                manufacturer: m.manufacturer
+            }
+        })
+    }).select('tailnum manufacturer -_id'));
+
+    let tailnumsArray = planes.map(p => p.tailnum); //contains only the tailnums of the planes
+
+    let aggregatePipeline = [{
+        $match: {
+            tailnum: {
+                $in: tailnumsArray
+            }
+        }
+    }, {
+        $group: {
+            _id: "$tailnum",
+            count: {
+                $sum: 1
+            }
+        }
+    }];
+
+    //result will contain the number of flights per each unique plane (tailnum)
+    let result = await Flight.aggregate(aggregatePipeline).exec();
+
+    let tailnumManufacturer = {}; //association between a tailnum and the manufacturer
+    planes.forEach(p => tailnumManufacturer[p.tailnum] = p.manufacturer);
+
+    //sum up all the flights from planes into the same manufacturer
+    let flights = {};
+    result.forEach(o => {
+        let tailnum = o._id;
+        let manufacturer = tailnumManufacturer[tailnum];
+        flights[manufacturer] = flights[manufacturer] == undefined ? o.count : flights[manufacturer] + o.count;
+    });
+
+    //extract all the flights from object as separate objects
+    result = Object.keys(flights).map(key => {
+        return {
+            manufacturer: key,
+            flights: flights[key]
+        };
+    })
 
     return result;
 }
@@ -281,5 +345,6 @@ module.exports = {
     numberOfPlanesOfEachModel,
     temperature,
     meanDepartureArrivalDelay,
-    manufacturersWithMinPlanes
+    manufacturersWithMinPlanes,
+    numberOfFlightsPerManufacturerWithMinPlanes
 }
