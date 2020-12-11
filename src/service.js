@@ -143,11 +143,14 @@ const weatherObservations = async (origin) => {
 }
 
 const temperature = async (origin) => {
-    let result = await Weather.find({
-        'origin': origin
-    }).select('temp').exec();
+    let result = await Weather.find({'origin': origin}).sort({month:1,day:1 ,hour:1}).select('origin hour day month temp -_id').lean();
 
-    return result.map(o => (o.temp - 32) / 1.8);
+    result.forEach((o) => {
+        o.temperature = (o.temp - 32) / 1.8;
+        delete o.temp
+    });
+   
+    return result;
 }
 
 const dailyMeanTemperature = async (origin) => {
