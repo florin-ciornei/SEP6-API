@@ -15,6 +15,7 @@ mongoose.connect('mongodb+srv://sepMongo:mongo@cluster0.besa8.mongodb.net/sep6?r
         console.log("Connected to MongoDB via Mongoose");
     });
 
+    // Tests for Route 0
 describe("Test /origins", function () {
     test('Origins returns 3 origins', async () => {
         let origins = await service.getOrigins();
@@ -37,6 +38,7 @@ describe("Test /origins", function () {
     });
 });
 
+// Tests for Route 1
 describe("Test /noOfFlightsPerMonth", function () {
     test("There are exactly 12 numbers in the returned array, one for each month, WITHOUT origin", async () => {
         let noOfFlightsPerMonth = await service.getNumberOfFlightsPerMonth();
@@ -49,6 +51,7 @@ describe("Test /noOfFlightsPerMonth", function () {
     });
 });
 
+// Tests for Route 2
 describe("Test /topDestinations", function () {
     test("Top destinations returns 10 destinations", async () => {
         let destinations = await service.countTopDestinations(10);
@@ -71,6 +74,7 @@ describe("Test /topDestinations", function () {
     });
 });
 
+// Tests for Route 3
 describe("Test /meanAirtime", function () {
     test('There are 3 returned values', async () => {
         let meanAirtime = await service.meanAirtime();
@@ -103,6 +107,7 @@ describe("Test /meanAirtime", function () {
     });
 });
 
+// Tests for Route 4
 describe("Test /weatherObservations", function () {
     test('There are 3 returned values', async () => {
         let weatherObservations = await service.weatherObservations();
@@ -134,6 +139,14 @@ describe("Test /weatherObservations", function () {
         expect(weatherObservations[0].faa).toBe("JFK");
     });
 });
+
+// Tests for Route 7
+
+// Tests for Route 8 AND 9
+
+// Tests for Route 10
+
+// Tests for Route 11
 
 
 afterAll(async () => {
