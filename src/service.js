@@ -235,7 +235,7 @@ const manufacturersWithMinPlanes = async (minPlanes) => {
     let result = await Plane.aggregate(aggregatePipeline).exec();
 
     result = result.filter((o)=>{
-        return o.number_of_planes > 200
+        return o.number_of_planes > minPlanes
     });
     
     result.forEach((o) => {
@@ -270,6 +270,47 @@ const numberOfPlanesOfEachModel = async (manufacturer) => {
     return result;
 }
 
+const numberOfFlightsPerManufacturerWithMinPlanes = async (minPlanes) => {
+    //first of all find the manufacturers that have at least minPlanes
+    let manufacturers = await manufacturersWithMinPlanes(minPlanes);
+
+    //find the tailNums based on the above retrieved manufacturers
+    let planes =  (await Plane.find({$or:manufacturers.map((m)=>{
+        return {manufacturer:m.manufacturer}
+    })}).select('tailnum manufacturer -_id'));
+    
+    let tailnumsArray=planes.map(p=>p.tailnum);//contains only the tailnums of the planes
+    
+    let aggregatePipeline = [{
+        $match:{
+            tailnum:{$in:tailnumsArray}
+        }
+    }, {
+        $group: {
+            _id: "$tailnum",
+            count: {
+                $sum: 1
+            }
+        }
+    }];
+
+    //result will contain the number of flights per each unique plane (tailnum)
+    let result = await Flight.aggregate(aggregatePipeline).exec();
+
+    let tailnumManufacturer={};//association between a tailnum and the manufacturer
+    planes.forEach(p=>tailnumManufacturer[p.tailnum]=p.manufacturer);
+
+    //sum up all the flights from planes into the same manufacturer
+    let flights={};
+    result.forEach(o=>{
+        let tailnum=o._id;
+        let manufacturer=tailnumManufacturer[tailnum];
+        flights[manufacturer]=flights[manufacturer]==undefined?o.count:flights[manufacturer]+o.count;
+    });
+
+    return flights;
+}
+
 
 module.exports = {
     getOrigins,
@@ -281,5 +322,6 @@ module.exports = {
     numberOfPlanesOfEachModel,
     temperature,
     meanDepartureArrivalDelay,
-    manufacturersWithMinPlanes
+    manufacturersWithMinPlanes,
+    numberOfFlightsPerManufacturerWithMinPlanes
 }

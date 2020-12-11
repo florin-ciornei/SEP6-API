@@ -201,6 +201,28 @@ app.get('/numberOfPlanesOfEachModel', async (req, res) => {
     res.json(data);
 });
 
+app.get('/numberOfPlanesOfEachModel', async (req, res) => {
+    let manufacturer = req.query.manufacturer;
+
+    if (manufacturer == undefined)
+        return res.status(400).send("Please add manufacturer query parameter, ex: ?manufacturer=AIRBUS%20INDUSTRIE")
+
+    let data = await service.numberOfPlanesOfEachModel(manufacturer);
+    res.json(data);
+});
+
+app.get('/noOfFlightsPerManufacter', async (req, res) => {
+    if (req.query.minPlanes == undefined)
+        return res.status(400).send("Please specify the number " +
+            "of the min planes a manufacturer should have");
+
+    let minPlanes = parseInt(req.query.minPlanes);
+    if (isNaN(minPlanes))
+        return res.status(400).send("minPlanes doesn't appear to be a number!");
+
+    let data = await service.numberOfFlightsPerManufacturerWithMinPlanes(minPlanes);
+    res.json(data);
+});
 
 /**
  * @api {get} / Display Main Page
