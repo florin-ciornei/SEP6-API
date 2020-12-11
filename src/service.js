@@ -219,6 +219,33 @@ const meanDepartureArrivalDelay = async (origin) => {
     return result;
 }
 
+const manufacturersWithMinPlanes = async (minPlanes) => {
+    let aggregatePipeline = [{
+        $group: {
+            _id: "$manufacturer",
+            number_of_planes: {
+                $sum: 1
+            }
+        },      
+    },
+    {
+        $sort: {number_of_planes: -1 }
+    }];
+
+    let result = await Plane.aggregate(aggregatePipeline).exec();
+
+    result = result.filter((o)=>{
+        return o.number_of_planes > 200
+    });
+    
+    result.forEach((o) => {
+        o.manufacturer = o._id;
+        delete o._id;
+    });
+
+    return result;
+}
+
 const numberOfPlanesOfEachModel = async (manufacturer) => {
     let aggregatePipeline = [{
         $match: {
@@ -253,5 +280,6 @@ module.exports = {
     dailyMeanTemperature,
     numberOfPlanesOfEachModel,
     temperature,
-    meanDepartureArrivalDelay
+    meanDepartureArrivalDelay,
+    manufacturersWithMinPlanes
 }

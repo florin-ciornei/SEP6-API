@@ -173,6 +173,24 @@ app.get('/meanDepartureArrivalDelay', async (req, res) => {
     res.json(meanDepartureArrivalDelayPerOrigin);
 });
 
+/**
+ * @api {get} /manufacturersWithMinPlanes?minPlanes={minPlanes}
+ * Manufacturers With Min Planes - Request Manufacturers With Min Planes
+ * @apiName Get Manufacturers With Min Planes
+ * @apiGroup Route 11
+ *
+ * @apiParam {String} minPlanes The minimum number of planes a manufacturer must posses.
+ *
+ * @apiSuccess {json[]} man_With_Min_Planes Returns an array of json 
+ * objects containing the manufacturers that have more than the 
+ * specified number of planes
+ */
+app.get('/manufacturersWithMinPlanes', async (req, res) => {
+    let minPlanes = req.query.minPlanes;
+    let manufacturersWithMinPlanesPerOrigin = await service.manufacturersWithMinPlanes(minPlanes);
+    res.json(manufacturersWithMinPlanesPerOrigin);
+});
+
 app.get('/numberOfPlanesOfEachModel', async (req, res) => {
     let manufacturer = req.query.manufacturer;
 

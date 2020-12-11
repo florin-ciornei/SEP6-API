@@ -303,5 +303,41 @@ define({ "api": [
     "version": "0.0.0",
     "filename": "src/index.js",
     "groupTitle": "Route_10"
+  },
+  {
+    "type": "get",
+    "url": "/manufacturersWithMinPlanes?minPlanes={minPlanes}",
+    "title": "Manufacturers With Min Planes - Request Manufacturers With Min Planes",
+    "name": "Get_Manufacturers_With_Min_Planes",
+    "group": "Route_11",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "minPlanes",
+            "description": "<p>The minimum number of planes a manufacturer must posses.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "json[]",
+            "optional": false,
+            "field": "man_With_Min_Planes",
+            "description": "<p>Returns an array of json objects containing the manufacturers that have more than the specified number of planes</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/index.js",
+    "groupTitle": "Route_11"
   }
 ] });
