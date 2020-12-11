@@ -15,7 +15,7 @@ mongoose.connect('mongodb+srv://sepMongo:mongo@cluster0.besa8.mongodb.net/sep6?r
         console.log("Connected to MongoDB via Mongoose");
     });
 
-// Tests for Route 0
+    // Tests for Route 0
 describe("Test /origins", function () {
     test('Origins returns 3 origins', async () => {
         let origins = await service.getOrigins();
@@ -210,23 +210,109 @@ describe("Test /meanDepartureArrivalDelay", function () {
     });
 
     test('When "JFK" is passed as argument, the returned value has faa JFK', async () => {
-        let weatherObservations = await service.weatherObservations("JFK");
-        expect(weatherObservations[0].faa).toBe("JFK");
+        let meanDepartureArrivalDelay = await service.meanDepartureArrivalDelay("JFK");
+        expect(meanDepartureArrivalDelay[0].faa).toBe("JFK");
     });
     
     test('When "LGA" is passed as argument, the returned value has faa LGA', async () => {
-        let weatherObservations = await service.weatherObservations("LGA");
-        expect(weatherObservations[0].faa).toBe("LGA");
+        let meanDepartureArrivalDelay = await service.meanDepartureArrivalDelay("LGA");
+        expect(meanDepartureArrivalDelay[0].faa).toBe("LGA");
     });
     
     test('When "EWR" is passed as argument, the returned value has faa EWR', async () => {
-        let weatherObservations = await service.weatherObservations("EWR");
-        expect(weatherObservations[0].faa).toBe("EWR");
+        let meanDepartureArrivalDelay = await service.meanDepartureArrivalDelay("EWR");
+        expect(meanDepartureArrivalDelay[0].faa).toBe("EWR");
     });
     
+    test('When "JFK" is passed as argument, the mean departure delay is 8.75507169919908', async () => {
+        let meanDepartureArrivalDelay = await service.meanDepartureArrivalDelay("JFK");
+        expect(meanDepartureArrivalDelay[0].mean_Departure_Delay).toBe(8.75507169919908);
+    });
+    test('When "LGA" is passed as argument, the mean departure delay is 7.819649928854297', async () => {
+        let meanDepartureArrivalDelay = await service.meanDepartureArrivalDelay("LGA");
+        expect(meanDepartureArrivalDelay[0].mean_Departure_Delay).toBe(7.819649928854297);
+    });
+    test('When "EWR" is passed as argument, the mean departure delay is 11.612571722188918', async () => {
+        let meanDepartureArrivalDelay = await service.meanDepartureArrivalDelay("EWR");
+        expect(meanDepartureArrivalDelay[0].mean_Departure_Delay).toBe(11.612571722188918);
+    });
+
+    test('When "JFK" is passed as argument, the mean arrival delay is -0.07456551525203721', async () => {
+        let meanDepartureArrivalDelay = await service.meanDepartureArrivalDelay("JFK");
+        expect(meanDepartureArrivalDelay[0].mean_Arrival_Delay).toBe(-0.07456551525203721);
+    });
+    test('When "LGA" is passed as argument, the mean arrival delay is 2.366613913163146', async () => {
+        let meanDepartureArrivalDelay = await service.meanDepartureArrivalDelay("LGA");
+        expect(meanDepartureArrivalDelay[0].mean_Arrival_Delay).toBe(2.366613913163146);
+    });
+    test('When "EWR" is passed as argument, the mean arrival delay is 3.3733718252740834', async () => {
+        let meanDepartureArrivalDelay = await service.meanDepartureArrivalDelay("EWR");
+        expect(meanDepartureArrivalDelay[0].mean_Arrival_Delay).toBe(3.3733718252740834);
+    });
 });
 
 // Tests for Route 11
+describe("Test /manufacturersWithMinPlanes", function () {
+    test('There are no values returned for passing no argument/parameter', async () => {
+        let manufacturersWithMinPlanes = await service.manufacturersWithMinPlanes();
+        expect(manufacturersWithMinPlanes.length).toBe(0);
+    });
+
+    test('There are 5 values returned for passing 200 as an argument', async () => {
+        let manufacturersWithMinPlanes = await service.manufacturersWithMinPlanes(200);
+        expect(manufacturersWithMinPlanes.length).toBe(5);
+    });
+
+    test('When 200 is passed as argument, the first manufacturer is BOEING', async () => {
+        let manufacturersWithMinPlanes = await service.manufacturersWithMinPlanes(200);
+        expect(manufacturersWithMinPlanes[0].manufacturer).toBe("BOEING");
+    });
+    
+    test('When 200 is passed as argument, the second manufacturer is AIRBUS INDUSTRIE', async () => {
+        let manufacturersWithMinPlanes = await service.manufacturersWithMinPlanes(200);
+        expect(manufacturersWithMinPlanes[1].manufacturer).toBe("AIRBUS INDUSTRIE");
+    });
+    
+    test('When 200 is passed as argument, the third manufacturer is BOMBARDIER INC', async () => {
+        let manufacturersWithMinPlanes = await service.manufacturersWithMinPlanes(200);
+        expect(manufacturersWithMinPlanes[2].manufacturer).toBe("BOMBARDIER INC");
+    });
+
+    test('When 200 is passed as argument, the forth manufacturer is AIRBUS', async () => {
+        let manufacturersWithMinPlanes = await service.manufacturersWithMinPlanes(200);
+        expect(manufacturersWithMinPlanes[3].manufacturer).toBe("AIRBUS");
+    });
+
+    test('When 200 is passed as argument, the fifth manufacturer is EMBRAER', async () => {
+        let manufacturersWithMinPlanes = await service.manufacturersWithMinPlanes(200);
+        expect(manufacturersWithMinPlanes[4].manufacturer).toBe("EMBRAER");
+    });
+
+    test('When 200 is passed as argument, the number of planes for BOEING is 1630', async () => {
+        let manufacturersWithMinPlanes = await service.manufacturersWithMinPlanes(200);
+        expect(manufacturersWithMinPlanes[0].number_of_planes).toBe(1630);
+    });
+    
+    test('When 200 is passed as argument, the number of planes for AIRBUS INDUSTRIE is 400', async () => {
+        let manufacturersWithMinPlanes = await service.manufacturersWithMinPlanes(200);
+        expect(manufacturersWithMinPlanes[1].number_of_planes).toBe(400);
+    });
+    
+    test('When 200 is passed as argument, the number of planes for BOMBARDIER INC is 368', async () => {
+        let manufacturersWithMinPlanes = await service.manufacturersWithMinPlanes(200);
+        expect(manufacturersWithMinPlanes[2].number_of_planes).toBe(368);
+    });
+
+    test('When 200 is passed as argument, the number of planes for AIRBUS is 336', async () => {
+        let manufacturersWithMinPlanes = await service.manufacturersWithMinPlanes(200);
+        expect(manufacturersWithMinPlanes[3].number_of_planes).toBe(336);
+    });
+
+    test('When 200 is passed as argument, the number of planes for EMBRAER is 299', async () => {
+        let manufacturersWithMinPlanes = await service.manufacturersWithMinPlanes(200);
+        expect(manufacturersWithMinPlanes[4].number_of_planes).toBe(299);
+    });    
+});
 
 
 afterAll(async () => {
