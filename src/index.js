@@ -306,7 +306,7 @@ app.get('/noOfFlightsPerManufacter', async (req, res) => {
  */
 app.get('/', (req, res) => {
     res.send("Welcome to our SEP6 project !!! A RESTful API built by " +
-        "Andrei, Daniela and Florin. Test CI/CD");
+        "Andrei, Daniela and Florin. Test CI/CD1");
 });
 
 app.listen(port, () => {
