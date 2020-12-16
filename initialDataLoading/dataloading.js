@@ -40,8 +40,10 @@ const loadData = async (schema, fileName) => {
     //load data from .csv into an array
     perf.start();
     let dataArray = await csv().fromFile(`./initialDataLoading/files/${fileName}.csv`);
-    //replace NA (not available) numbers with undefined, otherwise there is an error when inserting in database because "NA" is trying to be put in the place of the number.
-    //TODO this solution is not perfect yet, if there is a string "NA" that's just a string and not a number, it will also be replaced with undefined. Check for key type before replacing.
+    //replace NA (not available) numbers with undefined, otherwise there is an error when inserting in 
+    //database because "NA" is trying to be put in the place of the number.
+    //TODO this solution is not perfect yet, if there is a string "NA" that's just a string and not 
+    //a number, it will also be replaced with undefined. Check for key type before replacing.
     let keys = Object.keys(dataArray[0]);
     dataArray.forEach(o => {
         keys.forEach(key => {
