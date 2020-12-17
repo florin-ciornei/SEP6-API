@@ -261,7 +261,7 @@ const manufacturersWithMinPlanes = async (minPlanes) => {
 const numberOfPlanesOfEachModel = async (manufacturer) => {
     let aggregatePipeline = [{
         $match: {
-            manufacturer: manufacturer
+            manufacturer: { $regex: manufacturer }
         }
     }, {
         $group: {
